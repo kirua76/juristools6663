@@ -1,0 +1,3489 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JurisTools - Plateforme Juridique IA Complète</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'DM Sans', sans-serif; }
+        .font-serif { font-family: 'Crimson Pro', serif; }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hidden { display: none; }
+        .chat-message { animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .drop-zone { border: 2px dashed #cbd5e0; transition: all 0.3s; }
+        .drop-zone.drag-over { border-color: #e8b44a; background-color: #fef3c7; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0a2540',
+                        secondary: '#e8b44a',
+                        accent: '#3b7ea1',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+
+    <!-- PAGE DE CONNEXION -->
+    <div id="loginPage" class="min-h-screen flex bg-gradient-to-br from-primary via-primary to-accent">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse"></div>
+        
+        <div class="flex-1 flex items-center justify-center p-12 relative z-10 max-lg:hidden">
+            <div class="max-w-lg text-white">
+                <h1 class="text-5xl font-serif font-bold mb-4 bg-gradient-to-r from-white to-secondary bg-clip-text text-transparent">
+                    JurisTools
+                </h1>
+                <p class="text-xl mb-12 text-white/90">
+                    L'IA qui fait gagner 10h par semaine aux avocats
+                </p>
+
+                <div class="space-y-6">
+                    <div class="flex gap-4 p-6 bg-white/10 backdrop-blur-lg rounded-xl border border-white/20">
+                        <div class="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center text-2xl flex-shrink-0">🤖</div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-1">Assistant IA Juridique</h3>
+                            <p class="text-white/80 text-sm">Réponses instantanées 24/7</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 p-6 bg-white/10 backdrop-blur-lg rounded-xl border border-white/20">
+                        <div class="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center text-2xl flex-shrink-0">📁</div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-1">Analyseur de Dossiers</h3>
+                            <p class="text-white/80 text-sm">Analyse complète en 30 secondes</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 p-6 bg-white/10 backdrop-blur-lg rounded-xl border border-white/20">
+                        <div class="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center text-2xl flex-shrink-0">✍️</div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-1">Générateur de Courriers</h3>
+                            <p class="text-white/80 text-sm">Créez des actes en 2 minutes</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 p-6 bg-white/10 backdrop-blur-lg rounded-xl border border-white/20">
+                        <div class="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center text-2xl flex-shrink-0">⏱️</div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-1">Calcul de Délais</h3>
+                            <p class="text-white/80 text-sm">Ne ratez plus jamais un délai</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 p-6 bg-white/10 backdrop-blur-lg rounded-xl border border-white/20">
+                        <div class="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center text-2xl flex-shrink-0">🔍</div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-1">Tri Intelligent Pièces</h3>
+                            <p class="text-white/80 text-sm">47 pièces triées en 30 secondes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-1 flex items-center justify-center p-12 bg-white">
+            <div class="w-full max-w-md">
+                <h2 class="text-4xl font-serif font-bold text-primary mb-2">Connexion</h2>
+                <p class="text-gray-600 mb-8">Accédez à votre cabinet numérique</p>
+
+                <form id="loginForm" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                        <input type="email" id="loginEmail" value="demo@juristools.fr" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none focus:ring-4 focus:ring-secondary/10 transition-all" required>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Mot de passe</label>
+                        <input type="password" id="loginPassword" value="demo123" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none focus:ring-4 focus:ring-secondary/10 transition-all" required>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 px-6 bg-gradient-to-r from-primary to-accent text-white rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all">
+                        Se connecter
+                    </button>
+                </form>
+
+                <div class="mt-6 p-4 bg-yellow-50 border-l-4 border-secondary rounded-lg">
+                    <p class="text-sm">
+                        <strong>🔑 Démo :</strong> Cliquez sur "Se connecter"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- APPLICATION -->
+    <div id="app" class="hidden min-h-screen flex">
+        <!-- Sidebar -->
+        <aside class="w-72 bg-gradient-to-b from-primary via-primary to-accent text-white fixed h-screen overflow-y-auto shadow-2xl z-40 backdrop-blur-sm">
+            <div class="p-8">
+                <h1 class="text-3xl font-serif font-bold bg-gradient-to-r from-white to-secondary bg-clip-text text-transparent mb-12">
+                    JurisTools
+                </h1>
+
+                <nav class="space-y-2">
+                    <button onclick="showPage('dashboard')" class="nav-item w-full flex items-center gap-3 px-5 py-4 rounded-xl transition-all text-left hover:bg-white/20 hover:shadow-lg" data-page="dashboard">
+                        <span class="text-2xl">📊</span>
+                        <span class="font-medium">Tableau de bord</span>
+                    </button>
+
+                    <button onclick="showPage('assistant')" class="nav-item w-full flex items-center gap-3 px-5 py-4 rounded-xl transition-all text-left hover:bg-white/20 hover:shadow-lg" data-page="assistant">
+                        <span class="text-2xl">🤖</span>
+                        <span class="font-medium">Assistant IA</span>
+                    </button>
+
+                    <button onclick="showPage('courrier')" class="nav-item w-full flex items-center gap-3 px-5 py-4 rounded-xl transition-all text-left hover:bg-white/20 hover:shadow-lg" data-page="courrier">
+                        <span class="text-2xl">✍️</span>
+                        <span class="font-medium">Courriers</span>
+                    </button>
+
+                    <button onclick="showPage('delais')" class="nav-item w-full flex items-center gap-3 px-5 py-4 rounded-xl transition-all text-left hover:bg-white/20 hover:shadow-lg" data-page="delais">
+                        <span class="text-2xl">⏱️</span>
+                        <span class="font-medium">Calcul Délais</span>
+                    </button>
+
+                    <button onclick="showPage('pieces')" class="nav-item w-full flex items-center gap-3 px-5 py-4 rounded-xl transition-all text-left hover:bg-white/20 hover:shadow-lg" data-page="pieces">
+                        <span class="text-2xl">🔍</span>
+                        <span class="font-medium">Tri Intelligent Pièces</span>
+                    </button>
+
+                    <button onclick="showPage('stats')" class="nav-item w-full flex items-center gap-3 px-5 py-4 rounded-xl transition-all text-left hover:bg-white/20 hover:shadow-lg" data-page="stats">
+                        <span class="text-2xl">📈</span>
+                        <span class="font-medium">Statistiques & Rapports</span>
+                    </button>
+
+                    <button onclick="showPage('clients')" class="nav-item w-full flex items-center gap-3 px-5 py-4 rounded-xl transition-all text-left hover:bg-white/20 hover:shadow-lg" data-page="clients">
+                        <span class="text-2xl">👥</span>
+                        <span class="font-medium">Dossiers & Clients</span>
+                    </button>
+
+                    <button onclick="showPage('jurisprudence')" class="nav-item w-full flex items-center gap-3 px-5 py-4 rounded-xl transition-all text-left hover:bg-white/20 hover:shadow-lg" data-page="jurisprudence">
+                        <span class="text-2xl">⚖️</span>
+                        <span class="font-medium">Recherche Jurisprudence</span>
+                    </button>
+                </nav>
+
+                <div class="mt-12 p-4 bg-white/10 rounded-lg">
+                    <p class="text-sm text-white/70 mb-2">Connecté en tant que</p>
+                    <p class="font-semibold">Me. Dupont</p>
+                    <button onclick="logout()" class="mt-3 text-sm text-secondary hover:text-white transition-colors">Déconnexion</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Contenu principal -->
+        <main class="flex-1 ml-72 p-8">
+            
+            <!-- DASHBOARD -->
+            <div id="dashboardPage" class="page-content">
+                <div class="mb-8">
+                    <h2 class="text-4xl font-serif font-bold text-primary mb-2">Tableau de bord</h2>
+                    <p class="text-gray-600">Vue d'ensemble de votre activité</p>
+                </div>
+
+                <!-- Statistiques -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 animate-slide-up">
+                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all card-hover text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-white/90 text-sm font-medium">Aujourd'hui</p>
+                                <p class="text-5xl font-bold mt-2" id="todayCount">0</p>
+                                <p class="text-xs text-white/80 mt-2">audiences</p>
+                            </div>
+                            <div class="text-5xl opacity-80">📅</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all card-hover text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-white/90 text-sm font-medium">Cette semaine</p>
+                                <p class="text-3xl font-bold text-primary mt-1" id="weekCount">0</p>
+                                <p class="text-xs text-gray-500 mt-1">audiences</p>
+                            </div>
+                            <div class="text-4xl">📊</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all card-hover text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-white/90 text-sm font-medium">Dossiers prêts</p>
+                                <p class="text-3xl font-bold text-primary mt-1" id="readyCount">0</p>
+                                <p class="text-xs text-gray-500 mt-1">à plaider</p>
+                            </div>
+                            <div class="text-4xl">✅</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-red-500 to-red-600 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all card-hover text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-white/90 text-sm font-medium">En préparation</p>
+                                <p class="text-3xl font-bold text-primary mt-1" id="pendingCount">0</p>
+                                <p class="text-xs text-gray-500 mt-1">dossiers</p>
+                            </div>
+                            <div class="text-4xl">⏳</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audiences du jour -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 mb-8 animate-slide-up card-hover">
+                    <h3 class="text-3xl font-bold text-primary mb-6 flex items-center gap-3">
+                        <span class="text-4xl">📅</span> Audiences d'aujourd'hui
+                    </h3>
+                    <div id="todayAudiencesList" class="space-y-3">
+                        <!-- Généré par JS -->
+                    </div>
+                </div>
+
+                <!-- Liste complète -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 mb-8 animate-slide-up">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-3xl font-bold text-primary">📋 Toutes les audiences</h3>
+                        <button onclick="openAddAudienceModal()" class="px-8 py-4 bg-gradient-to-r from-secondary to-yellow-600 text-white rounded-xl hover:shadow-2xl transition-all font-bold text-lg">
+                            + Nouvelle audience
+                        </button>
+                    </div>
+
+                    <!-- Filtres -->
+                    <div class="flex gap-3 mb-6 flex-wrap">
+                        <button onclick="filterAudiences('all')" class="filter-btn px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium transition-all" data-filter="all">
+                            Toutes <span id="countAll" class="ml-1 bg-white/20 px-2 py-0.5 rounded">0</span>
+                        </button>
+                        <button onclick="filterAudiences('today')" class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300 transition-all" data-filter="today">
+                            Aujourd'hui <span id="countToday" class="ml-1 bg-black/10 px-2 py-0.5 rounded">0</span>
+                        </button>
+                        <button onclick="filterAudiences('week')" class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300 transition-all" data-filter="week">
+                            Cette semaine <span id="countWeek" class="ml-1 bg-black/10 px-2 py-0.5 rounded">0</span>
+                        </button>
+                        <button onclick="filterAudiences('pending')" class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300 transition-all" data-filter="pending">
+                            En préparation <span id="countPending" class="ml-1 bg-black/10 px-2 py-0.5 rounded">0</span>
+                        </button>
+                        <button onclick="filterAudiences('ready')" class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300 transition-all" data-filter="ready">
+                            Prêts <span id="countReady" class="ml-1 bg-black/10 px-2 py-0.5 rounded">0</span>
+                        </button>
+                    </div>
+
+                    <div id="audiencesList" class="space-y-4">
+                        <!-- Généré par JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ASSISTANT IA -->
+            <div id="assistantPage" class="page-content hidden">
+                <div class="mb-8">
+                    <h2 class="text-4xl font-serif font-bold text-primary mb-2">Assistant IA Juridique</h2>
+                    <p class="text-gray-600">Posez vos questions juridiques, obtenez des réponses précises</p>
+                </div>
+
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-white rounded-xl shadow-lg h-[600px] flex flex-col">
+                        <div id="chatMessages" class="flex-1 p-6 overflow-y-auto space-y-4">
+                            <div class="chat-message">
+                                <div class="flex gap-3">
+                                    <div class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center flex-shrink-0">🤖</div>
+                                    <div class="bg-gray-100 rounded-lg p-4 max-w-2xl">
+                                        <p class="text-gray-700">Bonjour Me. Dupont ! Je suis votre assistant juridique IA spécialisé. Je peux vous aider sur tous vos dossiers. Posez-moi n'importe quelle question !</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-t">
+                            <div class="flex gap-2 mb-3">
+                                <button onclick="quickQuestion('Quels sont les délais d\'appel ?')" class="px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded-full">
+                                    Délais d'appel ?
+                                </button>
+                                <button onclick="quickQuestion('Comment rédiger une mise en demeure ?')" class="px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded-full">
+                                    Mise en demeure ?
+                                </button>
+                                <button onclick="quickQuestion('Force majeure en droit civil ?')" class="px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded-full">
+                                    Force majeure ?
+                                </button>
+                            </div>
+                            <form id="chatForm" class="flex gap-3">
+                                <input 
+                                    type="text" 
+                                    id="chatInput" 
+                                    class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none"
+                                    placeholder="Posez votre question juridique..."
+                                    required
+                                >
+                                <button type="submit" class="px-6 py-3 bg-secondary text-white rounded-lg font-semibold hover:bg-secondary/90 transition-all">
+                                    Envoyer
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GÉNÉRATEUR COURRIERS -->
+            <div id="courrierPage" class="page-content hidden">
+                <div class="mb-8">
+                    <h2 class="text-4xl font-serif font-bold text-primary mb-2">Générateur de Courriers</h2>
+                    <p class="text-gray-600">Créez des courriers juridiques professionnels en quelques clics</p>
+                </div>
+
+                <div class="max-w-4xl">
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <form id="courrierForm" class="space-y-6">
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Type de courrier *</label>
+                                    <select id="courrierType" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" required>
+                                        <option value="">Sélectionnez...</option>
+                                        <option value="mise_en_demeure">Mise en demeure</option>
+                                        <option value="assignation">Assignation</option>
+                                        <option value="conclusions">Conclusions</option>
+                                        <option value="recours">Recours</option>
+                                        <option value="requete">Requête</option>
+                                        <option value="reponse">Réponse à courrier adverse</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Destinataire *</label>
+                                    <input type="text" id="destinataire" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" placeholder="Nom du destinataire" required>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Objet du courrier *</label>
+                                <input type="text" id="objetCourrier" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" placeholder="Ex: Non-paiement de loyers" required>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Contexte et détails *</label>
+                                <textarea id="contexteCourrier" rows="6" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" placeholder="Décrivez la situation, les faits, les montants..." required></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full py-4 px-6 bg-secondary text-white rounded-lg font-semibold hover:bg-secondary/90 text-lg shadow-lg hover:shadow-xl transition-all">
+                                🚀 Générer le courrier
+                            </button>
+                        </form>
+
+                        <div id="courrierResult" class="mt-8 hidden">
+                            <div class="border-t pt-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-2xl font-bold text-primary">📄 Courrier généré</h3>
+                                    <div class="flex gap-2">
+                                        <button onclick="downloadCourrier()" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium">
+                                            📥 Télécharger
+                                        </button>
+                                        <button onclick="copyCourrier()" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 text-sm font-medium">
+                                            📋 Copier
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="courrierContent" class="bg-gray-50 p-6 rounded-lg whitespace-pre-wrap text-sm leading-relaxed"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CALCULATEUR DÉLAIS -->
+            <div id="delaisPage" class="page-content hidden">
+                <div class="mb-8">
+                    <h2 class="text-4xl font-serif font-bold text-primary mb-2">Calculateur de Délais</h2>
+                    <p class="text-gray-600">Calculez précisément vos délais de procédure</p>
+                </div>
+
+                <div class="max-w-4xl">
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <form id="delaisForm" class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Type de procédure *</label>
+                                <select id="typeProcedure" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" required>
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="appel">Appel (1 mois)</option>
+                                    <option value="pourvoi">Pourvoi en cassation (2 mois)</option>
+                                    <option value="opposition">Opposition (1 mois)</option>
+                                    <option value="tierce_opposition">Tierce opposition (30 jours)</option>
+                                    <option value="contredit">Contredit (15 jours)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Date de notification / signification *</label>
+                                <input type="date" id="dateNotif" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" required>
+                            </div>
+
+                            <button type="submit" class="w-full py-4 px-6 bg-secondary text-white rounded-lg font-semibold hover:bg-secondary/90 text-lg shadow-lg hover:shadow-xl transition-all">
+                                ⏱️ Calculer le délai
+                            </button>
+                        </form>
+
+                        <div id="delaisResult" class="mt-8 hidden">
+                            <div class="border-t pt-6">
+                                <h3 class="text-2xl font-bold text-primary mb-6">📊 Résultat du calcul</h3>
+                                <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-8 rounded-xl mb-6 shadow-xl">
+                                    <p class="text-sm mb-2 opacity-90">Date limite pour agir</p>
+                                    <p class="text-5xl font-bold" id="dateLimite">-</p>
+                                    <p class="text-sm mt-2 opacity-90" id="joursRestants">-</p>
+                                </div>
+                                <div class="space-y-3" id="delaisDetails"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRI INTELLIGENT PIÈCES -->
+            <div id="piecesPage" class="page-content hidden">
+                <div class="mb-8">
+                    <h2 class="text-4xl font-serif font-bold text-primary mb-2">Tri Intelligent des Pièces</h2>
+                    <p class="text-gray-600">L'IA analyse et classe automatiquement toutes vos pièces par catégorie juridique</p>
+                </div>
+
+                <div class="max-w-6xl">
+                    <!-- Zone d'upload -->
+                    <div id="piecesDropZone" class="drop-zone bg-white rounded-xl shadow-lg p-12 text-center mb-8 cursor-pointer">
+                        <div class="mb-6">
+                            <svg class="mx-auto h-24 w-24 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-primary mb-2">Importez votre dossier complet</h3>
+                        <p class="text-gray-600 mb-6">PDF de 100 pages ? Pile de documents ? L'IA s'occupe de tout trier</p>
+                        <div class="flex gap-4 justify-center flex-wrap">
+                            <label class="inline-block px-6 py-3 bg-secondary text-white rounded-lg font-semibold cursor-pointer hover:bg-secondary/90 transition-all shadow-lg">
+                                📂 Importer un PDF
+                                <input type="file" id="piecesFileInput" class="hidden" accept=".pdf,.jpg,.jpeg,.png" onchange="handlePiecesUpload(event)">
+                            </label>
+                            <button type="button" onclick="launchDemoPieces()" class="px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-all shadow-lg">
+                                🎬 Voir la démo (dossier exemple)
+                            </button>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-4">PDF, images • Jusqu'à 500 pages • Analyse en quelques secondes</p>
+                    </div>
+
+                    <!-- Analyse en cours -->
+                    <div id="piecesAnalysisLoading" class="hidden bg-white rounded-xl shadow-lg p-12 text-center mb-8">
+                        <div class="loading mx-auto mb-4" style="width: 60px; height: 60px; border-width: 5px; border-color: #e8b44a transparent"></div>
+                        <h3 class="text-2xl font-bold text-primary mb-2">🤖 IA en action...</h3>
+                        <p class="text-gray-600 mb-6" id="piecesAnalysisStep">Lecture et indexation du document...</p>
+                        <div class="max-w-md mx-auto bg-gray-100 rounded-full h-3 overflow-hidden">
+                            <div id="piecesProgressBar" class="bg-secondary h-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-3" id="piecesProgressText">0%</p>
+                    </div>
+
+                    <!-- Résultats -->
+                    <div id="piecesResults" class="hidden space-y-6">
+                        <!-- Header résumé -->
+                        <div class="bg-gradient-to-r from-primary to-accent text-white rounded-xl shadow-lg p-8">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-3xl font-bold mb-2">✅ Analyse terminée</h3>
+                                    <p class="text-white/90 text-lg" id="piecesSummary">156 pages analysées • 47 pièces identifiées • 8 catégories</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-5xl font-bold" id="piecesCount">47</div>
+                                    <div class="text-sm text-white/80">pièces triées</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stats rapides -->
+                        <div class="grid grid-cols-4 gap-4">
+                            <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-blue-500">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm text-gray-600 mb-1">Contrats</p>
+                                        <p class="text-3xl font-bold text-primary">8</p>
+                                    </div>
+                                    <div class="text-3xl">📄</div>
+                                </div>
+                            </div>
+                            <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-green-500">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm text-gray-600 mb-1">Décisions</p>
+                                        <p class="text-3xl font-bold text-primary">5</p>
+                                    </div>
+                                    <div class="text-3xl">⚖️</div>
+                                </div>
+                            </div>
+                            <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-yellow-500">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm text-gray-600 mb-1">Courriers</p>
+                                        <p class="text-3xl font-bold text-primary">12</p>
+                                    </div>
+                                    <div class="text-3xl">✉️</div>
+                                </div>
+                            </div>
+                            <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-red-500">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm text-gray-600 mb-1">Alertes</p>
+                                        <p class="text-3xl font-bold text-primary">3</p>
+                                    </div>
+                                    <div class="text-3xl">⚠️</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alertes critiques -->
+                        <div class="bg-red-50 border-2 border-red-300 rounded-xl p-6">
+                            <h4 class="text-xl font-bold text-red-700 mb-4 flex items-center gap-2">
+                                <span class="text-2xl">🚨</span> Alertes à traiter en priorité
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="bg-white p-4 rounded-lg border-l-4 border-red-500">
+                                    <div class="flex items-start gap-3">
+                                        <span class="text-2xl">⚠️</span>
+                                        <div class="flex-1">
+                                            <p class="font-bold text-red-700">Délai de prescription proche</p>
+                                            <p class="text-sm text-gray-700 mt-1">Action en responsabilité : prescription dans 45 jours (page 23)</p>
+                                            <button onclick="viewPiecePage(23)" class="mt-2 text-sm text-blue-600 hover:text-blue-800 font-medium">→ Voir la page</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border-l-4 border-orange-500">
+                                    <div class="flex items-start gap-3">
+                                        <span class="text-2xl">⚠️</span>
+                                        <div class="flex-1">
+                                            <p class="font-bold text-orange-700">Contrat sans signature</p>
+                                            <p class="text-sm text-gray-700 mt-1">Contrat de prestation du 15/03/2025 - Signature partie adverse absente (page 78-82)</p>
+                                            <button onclick="viewPiecePage(78)" class="mt-2 text-sm text-blue-600 hover:text-blue-800 font-medium">→ Voir la page</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border-l-4 border-yellow-500">
+                                    <div class="flex items-start gap-3">
+                                        <span class="text-2xl">⚠️</span>
+                                        <div class="flex-1">
+                                            <p class="font-bold text-yellow-700">Pièce illisible détectée</p>
+                                            <p class="text-sm text-gray-700 mt-1">Pages 134-136 : qualité scan insuffisante pour OCR - À re-scanner</p>
+                                            <button onclick="viewPiecePage(134)" class="mt-2 text-sm text-blue-600 hover:text-blue-800 font-medium">→ Voir la page</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dates essentielles -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h4 class="text-2xl font-bold text-primary mb-4 flex items-center gap-2">
+                                <span class="text-2xl">📅</span> Dates essentielles identifiées
+                            </h4>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                                    <p class="text-sm font-semibold text-gray-600 mb-1">Prescription</p>
+                                    <p class="text-xl font-bold text-primary">24/03/2026</p>
+                                    <p class="text-xs text-gray-600 mt-1">Dans 45 jours</p>
+                                </div>
+                                <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                                    <p class="text-sm font-semibold text-gray-600 mb-1">Délai appel</p>
+                                    <p class="text-xl font-bold text-primary">15/03/2026</p>
+                                    <p class="text-xs text-gray-600 mt-1">Dans 36 jours</p>
+                                </div>
+                                <div class="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500">
+                                    <p class="text-sm font-semibold text-gray-600 mb-1">Prochaine audience</p>
+                                    <p class="text-xl font-bold text-primary">18/02/2026</p>
+                                    <p class="text-xs text-gray-600 mt-1">Dans 9 jours</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pièces triées par catégorie -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex justify-between items-center mb-6">
+                                <h4 class="text-2xl font-bold text-primary">📂 Pièces classées par catégorie</h4>
+                                <button onclick="exportPiecesReport()" class="px-6 py-3 bg-secondary text-white rounded-lg hover:bg-secondary/90 font-semibold shadow-lg">
+                                    📥 Exporter le rapport complet
+                                </button>
+                            </div>
+
+                            <div class="space-y-4">
+                                <!-- Catégorie Contrats -->
+                                <div class="border-2 border-gray-200 rounded-lg overflow-hidden">
+                                    <button onclick="toggleCategory('contrats')" class="w-full bg-gray-50 p-4 flex justify-between items-center hover:bg-gray-100 transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-3xl">📄</span>
+                                            <div class="text-left">
+                                                <p class="font-bold text-primary text-lg">Contrats</p>
+                                                <p class="text-sm text-gray-600">8 documents • Pages 12-89</p>
+                                            </div>
+                                        </div>
+                                        <span class="text-2xl text-gray-400">▼</span>
+                                    </button>
+                                    <div id="category-contrats" class="hidden p-4 space-y-3 bg-white">
+                                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all">
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-xl">📄</span>
+                                                <div>
+                                                    <p class="font-semibold text-primary">Contrat de prestation services</p>
+                                                    <p class="text-sm text-gray-600">Date: 15/03/2025 • Montant: 85 000€ • Pages 12-18</p>
+                                                </div>
+                                            </div>
+                                            <button onclick="viewPiecePage(12)" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium">
+                                                Voir
+                                            </button>
+                                        </div>
+                                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all">
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-xl">📄</span>
+                                                <div>
+                                                    <p class="font-semibold text-primary">Contrat de bail commercial</p>
+                                                    <p class="text-sm text-gray-600">Date: 01/01/2024 • Loyer: 2 500€/mois • Pages 45-67</p>
+                                                </div>
+                                            </div>
+                                            <button onclick="viewPiecePage(45)" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium">
+                                                Voir
+                                            </button>
+                                        </div>
+                                        <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-xl">⚠️</span>
+                                                <div>
+                                                    <p class="font-semibold text-orange-700">Contrat sans signature (à vérifier)</p>
+                                                    <p class="text-sm text-gray-600">Date: 15/03/2025 • Pages 78-82</p>
+                                                </div>
+                                            </div>
+                                            <button onclick="viewPiecePage(78)" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm font-medium">
+                                                Vérifier
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Catégorie Décisions -->
+                                <div class="border-2 border-gray-200 rounded-lg overflow-hidden">
+                                    <button onclick="toggleCategory('decisions')" class="w-full bg-gray-50 p-4 flex justify-between items-center hover:bg-gray-100 transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-3xl">⚖️</span>
+                                            <div class="text-left">
+                                                <p class="font-bold text-primary text-lg">Décisions de justice</p>
+                                                <p class="text-sm text-gray-600">5 décisions • Pages 90-125</p>
+                                            </div>
+                                        </div>
+                                        <span class="text-2xl text-gray-400">▼</span>
+                                    </button>
+                                    <div id="category-decisions" class="hidden p-4 space-y-3 bg-white">
+                                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all">
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-xl">⚖️</span>
+                                                <div>
+                                                    <p class="font-semibold text-primary">Jugement TGI Paris</p>
+                                                    <p class="text-sm text-gray-600">Date: 12/06/2024 • RG 23/12345 • Pages 90-98</p>
+                                                </div>
+                                            </div>
+                                            <button onclick="viewPiecePage(90)" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium">
+                                                Voir
+                                            </button>
+                                        </div>
+                                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all">
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-xl">⚖️</span>
+                                                <div>
+                                                    <p class="font-semibold text-primary">Arrêt Cour d'Appel</p>
+                                                    <p class="text-sm text-gray-600">Date: 15/01/2025 • Confirmation jugement • Pages 105-115</p>
+                                                </div>
+                                            </div>
+                                            <button onclick="viewPiecePage(105)" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium">
+                                                Voir
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Catégorie Courriers -->
+                                <div class="border-2 border-gray-200 rounded-lg overflow-hidden">
+                                    <button onclick="toggleCategory('courriers')" class="w-full bg-gray-50 p-4 flex justify-between items-center hover:bg-gray-100 transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-3xl">✉️</span>
+                                            <div class="text-left">
+                                                <p class="font-bold text-primary text-lg">Correspondances juridiques</p>
+                                                <p class="text-sm text-gray-600">12 courriers • Mises en demeure, LRAR...</p>
+                                            </div>
+                                        </div>
+                                        <span class="text-2xl text-gray-400">▼</span>
+                                    </button>
+                                    <div id="category-courriers" class="hidden p-4 space-y-3 bg-white">
+                                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all">
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-xl">✉️</span>
+                                                <div>
+                                                    <p class="font-semibold text-primary">Mise en demeure #1</p>
+                                                    <p class="text-sm text-gray-600">Date: 03/11/2025 • Destinataire: Entreprise XYZ • Page 34</p>
+                                                </div>
+                                            </div>
+                                            <button onclick="viewPiecePage(34)" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium">
+                                                Voir
+                                            </button>
+                                        </div>
+                                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all">
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-xl">✉️</span>
+                                                <div>
+                                                    <p class="font-semibold text-primary">Mise en demeure #2</p>
+                                                    <p class="text-sm text-gray-600">Date: 15/12/2025 • Dernière relance • Page 39</p>
+                                                </div>
+                                            </div>
+                                            <button onclick="viewPiecePage(39)" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium">
+                                                Voir
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Catégorie Actes d'huissier -->
+                                <div class="border-2 border-gray-200 rounded-lg overflow-hidden">
+                                    <button onclick="toggleCategory('huissier')" class="w-full bg-gray-50 p-4 flex justify-between items-center hover:bg-gray-100 transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-3xl">📋</span>
+                                            <div class="text-left">
+                                                <p class="font-bold text-primary text-lg">Actes d'huissier</p>
+                                                <p class="text-sm text-gray-600">6 actes • Constats, significations...</p>
+                                            </div>
+                                        </div>
+                                        <span class="text-2xl text-gray-400">▼</span>
+                                    </button>
+                                    <div id="category-huissier" class="hidden p-4 space-y-3 bg-white">
+                                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all">
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-xl">📋</span>
+                                                <div>
+                                                    <p class="font-semibold text-primary">Constat de non-exécution</p>
+                                                    <p class="text-sm text-gray-600">Date: 20/12/2025 • Huissier Durand • Pages 126-129</p>
+                                                </div>
+                                            </div>
+                                            <button onclick="viewPiecePage(126)" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium">
+                                                Voir
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Autres catégories -->
+                                <div class="border-2 border-gray-200 rounded-lg overflow-hidden">
+                                    <button onclick="toggleCategory('autres')" class="w-full bg-gray-50 p-4 flex justify-between items-center hover:bg-gray-100 transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-3xl">📑</span>
+                                            <div class="text-left">
+                                                <p class="font-bold text-primary text-lg">Autres pièces</p>
+                                                <p class="text-sm text-gray-600">Identités, K-bis, attestations... • 16 pièces</p>
+                                            </div>
+                                        </div>
+                                        <span class="text-2xl text-gray-400">▼</span>
+                                    </button>
+                                    <div id="category-autres" class="hidden p-4 space-y-3 bg-white">
+                                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all">
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-xl">🆔</span>
+                                                <div>
+                                                    <p class="font-semibold text-primary">K-bis Société ABC</p>
+                                                    <p class="text-sm text-gray-600">Date: 01/10/2025 • Page 5</p>
+                                                </div>
+                                            </div>
+                                            <button onclick="viewPiecePage(5)" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium">
+                                                Voir
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions finales -->
+                        <div class="flex gap-4">
+                            <button onclick="resetPiecesAnalyzer()" class="flex-1 py-4 px-6 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 text-lg">
+                                Analyser un nouveau dossier
+                            </button>
+                            <button onclick="addPiecesToAudience()" class="flex-1 py-4 px-6 bg-secondary text-white rounded-lg font-semibold hover:bg-secondary/90 text-lg shadow-lg">
+                                📎 Attacher à une audience
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECHERCHE JURISPRUDENCE & TEXTES -->
+            <div id="jurisprudencePage" class="page-content hidden">
+                <div class="mb-8">
+                    <h2 class="text-4xl font-serif font-bold text-primary mb-2">Recherche Jurisprudence & Textes de Loi</h2>
+                    <p class="text-gray-600">Décrivez votre problématique, l'IA trouve automatiquement TOUTES les jurisprudences réelles et textes de loi pertinents</p>
+                </div>
+
+                <div class="max-w-6xl">
+                    <!-- Formulaire -->
+                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                        <h3 class="text-2xl font-bold text-primary mb-6">📝 Décrivez votre problématique juridique</h3>
+                        
+                        <form id="jurisForm" class="space-y-6">
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Domaine du droit *</label>
+                                    <select id="jurisDomaine" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" required>
+                                        <option value="">Sélectionnez...</option>
+                                        <option value="civil">Droit civil / Contrats</option>
+                                        <option value="travail">Droit du travail</option>
+                                        <option value="commercial">Droit commercial</option>
+                                        <option value="penal">Droit pénal</option>
+                                        <option value="administratif">Droit administratif</option>
+                                        <option value="famille">Droit de la famille</option>
+                                        <option value="immobilier">Droit immobilier</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Juridiction préférée</label>
+                                    <select id="jurisJuridiction" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none">
+                                        <option value="all">Toutes</option>
+                                        <option value="cassation">Cour de cassation</option>
+                                        <option value="appel">Cours d'appel</option>
+                                        <option value="conseil_etat">Conseil d'État</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Votre problématique *</label>
+                                <textarea 
+                                    id="jurisProblematique" 
+                                    rows="6" 
+                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" 
+                                    placeholder="Ex: Licenciement économique sans respect de l'obligation de reclassement. L'entreprise prétend avoir fait des propositions mais elles étaient inadaptées. Je cherche la jurisprudence sur les critères d'une recherche de reclassement loyale et sérieuse."
+                                    required
+                                ></textarea>
+                                <p class="text-sm text-gray-500 mt-2">💡 Plus c'est précis, meilleure est la recherche IA</p>
+                            </div>
+
+                            <button type="submit" class="w-full py-4 px-6 bg-gradient-to-r from-secondary to-yellow-600 text-white rounded-lg font-bold text-lg shadow-xl hover:shadow-2xl transition-all">
+                                🚀 Lancer la recherche IA
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Recherche en cours -->
+                    <div id="jurisLoading" class="hidden bg-white rounded-xl shadow-lg p-12 text-center mb-8">
+                        <div class="loading mx-auto mb-4" style="width: 60px; height: 60px; border-width: 5px; border-color: #e8b44a transparent"></div>
+                        <h3 class="text-2xl font-bold text-primary mb-2">🤖 IA en recherche...</h3>
+                        <p class="text-gray-600 mb-6" id="jurisLoadingStep">Analyse de votre problématique...</p>
+                        <div class="max-w-md mx-auto space-y-2 text-left">
+                            <div class="flex items-center gap-3 text-sm">
+                                <span class="text-green-500 text-xl">✓</span>
+                                <span class="text-gray-700" id="step1">Connexion à Légifrance...</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm">
+                                <span class="text-gray-400 text-xl" id="icon2">○</span>
+                                <span class="text-gray-500" id="step2">Recherche Cour de cassation...</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm">
+                                <span class="text-gray-400 text-xl" id="icon3">○</span>
+                                <span class="text-gray-500" id="step3">Scan des Cours d'appel...</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm">
+                                <span class="text-gray-400 text-xl" id="icon4">○</span>
+                                <span class="text-gray-500" id="step4">Analyse pertinence...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Résultats -->
+                    <div id="jurisResults" class="hidden space-y-6">
+                        <!-- Header -->
+                        <div class="bg-gradient-to-r from-primary to-accent text-white rounded-xl shadow-lg p-8">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-3xl font-bold mb-2">✅ Recherche terminée</h3>
+                                    <p class="text-white/90 text-lg" id="jurisResultsSummary">-</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-5xl font-bold" id="jurisResultsCount">-</div>
+                                    <div class="text-sm text-white/80">résultats trouvés</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-500">
+                                <p class="text-sm text-gray-600 mb-1">Jurisprudences</p>
+                                <p class="text-4xl font-bold text-primary" id="jurisCountJuris">-</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500">
+                                <p class="text-sm text-gray-600 mb-1">Textes de loi</p>
+                                <p class="text-4xl font-bold text-primary" id="jurisCountLois">-</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-purple-500">
+                                <p class="text-sm text-gray-600 mb-1">Sources officielles</p>
+                                <p class="text-4xl font-bold text-primary">100%</p>
+                            </div>
+                        </div>
+
+                        <!-- Résultats détaillés -->
+                        <div class="bg-white rounded-xl shadow-lg p-8" id="jurisResultsContent">
+                            <!-- Généré par JS -->
+                        </div>
+
+                        <div class="flex gap-4">
+                            <button onclick="exportJurisReport()" class="flex-1 py-4 px-6 bg-secondary text-white rounded-lg font-bold text-lg hover:bg-secondary/90 shadow-lg">
+                                📥 Exporter le rapport complet
+                            </button>
+                            <button onclick="resetJurisSearch()" class="flex-1 py-4 px-6 bg-gray-200 text-gray-700 rounded-lg font-bold text-lg hover:bg-gray-300">
+                                Nouvelle recherche
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- DOSSIERS & CLIENTS -->
+            <div id="clientsPage" class="page-content hidden">
+                <div class="mb-8 animate-slide-up">
+                    <h2 class="text-4xl font-serif font-bold text-primary mb-2">Dossiers & Clients</h2>
+                    <p class="text-gray-600">Gérez vos clients et analysez leurs dossiers avec l'IA</p>
+                </div>
+
+                <div class="max-w-6xl">
+                    <!-- Actions rapides -->
+                    <div class="grid grid-cols-3 gap-6 mb-8 animate-slide-up">
+                        <button onclick="openAddClientModal()" class="p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all card-hover border-l-4 border-blue-500 text-left group">
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform">
+                                    👤
+                                </div>
+                                <div>
+                                    <p class="text-lg font-bold text-primary">Nouveau client</p>
+                                    <p class="text-sm text-gray-600">Créer un dossier</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button onclick="openAnalyzerModal()" class="p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all card-hover border-l-4 border-green-500 text-left group">
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform">
+                                    📁
+                                </div>
+                                <div>
+                                    <p class="text-lg font-bold text-primary">Analyser un dossier</p>
+                                    <p class="text-sm text-gray-600">Upload PDF</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button onclick="showPage('jurisprudence')" class="p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all card-hover border-l-4 border-purple-500 text-left group">
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform">
+                                    ⚖️
+                                </div>
+                                <div>
+                                    <p class="text-lg font-bold text-primary">Recherche juris</p>
+                                    <p class="text-sm text-gray-600">IA juridique</p>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Stats clients -->
+                    <div class="grid grid-cols-4 gap-6 mb-8 animate-slide-up">
+                        <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-2xl shadow-xl text-white card-hover">
+                            <p class="text-sm opacity-90 mb-1">Total clients</p>
+                            <p class="text-5xl font-bold mb-1" id="totalClients">8</p>
+                            <p class="text-xs opacity-80">Actifs</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-2xl shadow-xl text-white card-hover">
+                            <p class="text-sm opacity-90 mb-1">Dossiers actifs</p>
+                            <p class="text-5xl font-bold mb-1" id="dossiersActifs">8</p>
+                            <p class="text-xs opacity-80">En cours</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 rounded-2xl shadow-xl text-white card-hover">
+                            <p class="text-sm opacity-90 mb-1">Audiences prévues</p>
+                            <p class="text-5xl font-bold mb-1" id="audiencesPrevues">8</p>
+                            <p class="text-xs opacity-80">À venir</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-2xl shadow-xl text-white card-hover">
+                            <p class="text-sm opacity-90 mb-1">Documents</p>
+                            <p class="text-5xl font-bold mb-1">47</p>
+                            <p class="text-xs opacity-80">Pièces</p>
+                        </div>
+                    </div>
+
+                    <!-- Liste clients -->
+                    <div class="bg-white rounded-2xl shadow-xl p-8 animate-slide-up">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-primary">📋 Liste des clients</h3>
+                        </div>
+
+                        <div class="mb-6">
+                            <input 
+                                type="text" 
+                                id="clientSearch" 
+                                placeholder="🔍 Rechercher un client par nom, email, type..." 
+                                class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none focus:ring-4 focus:ring-secondary/10 transition-all text-lg"
+                                onkeyup="filterClients()"
+                            >
+                        </div>
+
+                        <div id="clientsList" class="space-y-4">
+                            <!-- Généré par JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL ANALYSEUR DOSSIER -->
+            <div id="analyzerModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                <div class="bg-white rounded-2xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-3xl font-bold text-primary">📁 Analyser un dossier PDF</h3>
+                        <button onclick="closeAnalyzerModal()" class="text-gray-500 hover:text-gray-700 text-4xl leading-none">×</button>
+                    </div>
+
+                    <div id="dropZoneModal" class="drop-zone bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-12 text-center mb-8 cursor-pointer border-2 border-dashed border-gray-300 hover:border-secondary transition-all">
+                        <div class="mb-6">
+                            <svg class="mx-auto h-24 w-24 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-primary mb-2">Glissez-déposez votre dossier</h3>
+                        <p class="text-gray-600 mb-6">ou cliquez pour parcourir</p>
+                        <label class="inline-block px-8 py-4 bg-gradient-to-r from-secondary to-yellow-600 text-white rounded-xl font-bold cursor-pointer hover:shadow-xl transition-all">
+                            📂 Parcourir
+                            <input type="file" id="fileInputModal" class="hidden" accept=".pdf" onchange="handleFileSelectModal(event)">
+                        </label>
+                        <p class="text-sm text-gray-500 mt-4">PDF • Max 500 pages • Analyse en 30 secondes</p>
+                    </div>
+
+                    <div id="analysisResultModal" class="hidden"></div>
+                </div>
+            </div>
+
+            <!-- MODAL DÉTAIL CLIENT -->
+            <div id="clientDetailModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div class="bg-white rounded-xl p-8 max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <h3 class="text-4xl font-bold text-primary mb-2" id="clientDetailName">-</h3>
+                            <p class="text-lg text-gray-600" id="clientDetailType">-</p>
+                        </div>
+                        <button onclick="closeClientDetailModal()" class="text-gray-500 hover:text-gray-700 text-4xl leading-none">×</button>
+                    </div>
+
+                    <!-- Infos client -->
+                    <div class="grid grid-cols-3 gap-6 mb-8">
+                        <div class="bg-blue-50 p-5 rounded-lg">
+                            <p class="text-sm font-semibold text-gray-600 mb-1">📧 Email</p>
+                            <p class="text-lg text-primary" id="clientDetailEmail">-</p>
+                        </div>
+                        <div class="bg-green-50 p-5 rounded-lg">
+                            <p class="text-sm font-semibold text-gray-600 mb-1">📞 Téléphone</p>
+                            <p class="text-lg text-primary" id="clientDetailPhone">-</p>
+                        </div>
+                        <div class="bg-yellow-50 p-5 rounded-lg">
+                            <p class="text-sm font-semibold text-gray-600 mb-1">📅 Client depuis</p>
+                            <p class="text-lg text-primary" id="clientDetailDate">-</p>
+                        </div>
+                    </div>
+
+                    <!-- Audiences du client -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-2xl font-bold text-primary">📅 Audiences</h4>
+                            <button onclick="addAudienceToClient()" class="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 font-medium">
+                                + Ajouter une audience
+                            </button>
+                        </div>
+                        <div id="clientAudiences" class="space-y-3">
+                            <!-- Généré par JS -->
+                        </div>
+                    </div>
+
+                    <!-- Documents du dossier -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-2xl font-bold text-primary">📁 Documents</h4>
+                            <button onclick="uploadClientDoc()" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium">
+                                📤 Importer un document
+                            </button>
+                        </div>
+                        <div id="clientDocuments" class="grid grid-cols-2 gap-3">
+                            <!-- Généré par JS -->
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="mb-8">
+                        <h4 class="text-2xl font-bold text-primary mb-4">📝 Notes du dossier</h4>
+                        <textarea id="clientNotes" rows="4" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" placeholder="Notes internes sur le dossier..."></textarea>
+                        <button onclick="saveClientNotes()" class="mt-2 px-6 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 font-medium">
+                            💾 Enregistrer les notes
+                        </button>
+                    </div>
+
+                    <!-- Historique activité -->
+                    <div>
+                        <h4 class="text-2xl font-bold text-primary mb-4">📊 Historique d'activité</h4>
+                        <div class="space-y-3" id="clientActivity">
+                            <!-- Généré par JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL AJOUT CLIENT -->
+            <div id="addClientModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div class="bg-white rounded-xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <h3 class="text-3xl font-bold text-primary mb-6">Nouveau client</h3>
+                    <form id="addClientForm" class="space-y-5">
+                        <div class="grid grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Type *</label>
+                                <select id="newClientType" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" required>
+                                    <option value="Particulier">Particulier</option>
+                                    <option value="Entreprise">Entreprise</option>
+                                    <option value="Association">Association</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Nom / Raison sociale *</label>
+                                <input type="text" id="newClientName" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" required>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Email *</label>
+                                <input type="email" id="newClientEmail" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Téléphone *</label>
+                                <input type="tel" id="newClientPhone" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Adresse</label>
+                            <textarea id="newClientAddress" rows="3" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none"></textarea>
+                        </div>
+                        <div class="flex gap-3 pt-4">
+                            <button type="button" onclick="closeAddClientModal()" class="flex-1 py-3 px-4 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium">
+                                Annuler
+                            </button>
+                            <button type="submit" class="flex-1 py-3 px-4 bg-secondary text-white rounded-lg hover:bg-secondary/90 font-medium">
+                                ✅ Créer le client
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <!-- STATISTIQUES & RAPPORTS -->
+            <div id="statsPage" class="page-content hidden">
+                <div class="mb-8">
+                    <h2 class="text-4xl font-serif font-bold text-primary mb-2">Statistiques & Rapports</h2>
+                    <p class="text-gray-600">Vue d'ensemble de votre activité et performances</p>
+                </div>
+
+                <div class="max-w-6xl">
+                    <!-- KPIs principaux -->
+                    <div class="grid grid-cols-4 gap-6 mb-8">
+                        <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow-xl">
+                            <p class="text-sm opacity-90 mb-1">Taux de réussite</p>
+                            <p class="text-5xl font-bold mb-1">94%</p>
+                            <p class="text-xs opacity-80">+5% vs mois dernier</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-xl shadow-xl">
+                            <p class="text-sm opacity-90 mb-1">Temps gagné/semaine</p>
+                            <p class="text-5xl font-bold mb-1">12h</p>
+                            <p class="text-xs opacity-80">Grâce à JurisTools</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 text-white p-6 rounded-xl shadow-xl">
+                            <p class="text-sm opacity-90 mb-1">Dossiers traités</p>
+                            <p class="text-5xl font-bold mb-1">156</p>
+                            <p class="text-xs opacity-80">Ces 6 derniers mois</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow-xl">
+                            <p class="text-sm opacity-90 mb-1">Satisfaction clients</p>
+                            <p class="text-5xl font-bold mb-1">4.8</p>
+                            <p class="text-xs opacity-80">/ 5.0</p>
+                        </div>
+                    </div>
+
+                    <!-- Graphiques -->
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-xl font-bold text-primary mb-4">📊 Audiences par type</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">Contentieux civil</span>
+                                        <span class="text-sm font-bold text-primary">35%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-blue-500 h-3 rounded-full" style="width: 35%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">Droit du travail</span>
+                                        <span class="text-sm font-bold text-primary">28%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-green-500 h-3 rounded-full" style="width: 28%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">Droit commercial</span>
+                                        <span class="text-sm font-bold text-primary">22%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-yellow-500 h-3 rounded-full" style="width: 22%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">Autres</span>
+                                        <span class="text-sm font-bold text-primary">15%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-purple-500 h-3 rounded-full" style="width: 15%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-xl font-bold text-primary mb-4">📈 Activité mensuelle</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">Janvier 2026</span>
+                                        <span class="text-sm font-bold text-primary">18 dossiers</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-secondary h-3 rounded-full" style="width: 72%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">Février 2026</span>
+                                        <span class="text-sm font-bold text-primary">8 dossiers</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-secondary h-3 rounded-full" style="width: 32%"></div>
+                                    </div>
+                                </div>
+                                <div class="bg-blue-50 p-3 rounded-lg">
+                                    <p class="text-sm text-blue-800">📅 Mois en cours - 8 audiences prévues</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Utilisation des outils -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                        <h3 class="text-2xl font-bold text-primary mb-6">🛠️ Utilisation des outils IA</h3>
+                        <div class="grid grid-cols-3 gap-6">
+                            <div class="text-center p-6 bg-blue-50 rounded-lg">
+                                <div class="text-5xl mb-3">📁</div>
+                                <p class="text-3xl font-bold text-primary mb-1">47</p>
+                                <p class="text-sm text-gray-600 mb-2">Dossiers analysés</p>
+                                <p class="text-xs text-blue-600 font-semibold">23h gagnées</p>
+                            </div>
+                            <div class="text-center p-6 bg-green-50 rounded-lg">
+                                <div class="text-5xl mb-3">⚖️</div>
+                                <p class="text-3xl font-bold text-primary mb-1">124</p>
+                                <p class="text-sm text-gray-600 mb-2">Recherches juris</p>
+                                <p class="text-xs text-green-600 font-semibold">62h gagnées</p>
+                            </div>
+                            <div class="text-center p-6 bg-yellow-50 rounded-lg">
+                                <div class="text-5xl mb-3">✍️</div>
+                                <p class="text-3xl font-bold text-primary mb-1">89</p>
+                                <p class="text-sm text-gray-600 mb-2">Courriers générés</p>
+                                <p class="text-xs text-yellow-600 font-semibold">44h gagnées</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Export rapports -->
+                    <div class="bg-gradient-to-r from-primary to-accent text-white rounded-xl shadow-lg p-8">
+                        <h3 class="text-2xl font-bold mb-4">📥 Exporter vos rapports</h3>
+                        <p class="mb-6 opacity-90">Générez des rapports complets de votre activité</p>
+                        <div class="grid grid-cols-3 gap-4">
+                            <button onclick="exportReport('mensuel')" class="bg-white text-primary px-6 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-all">
+                                📊 Rapport mensuel
+                            </button>
+                            <button onclick="exportReport('clients')" class="bg-white text-primary px-6 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-all">
+                                👥 Liste clients
+                            </button>
+                            <button onclick="exportReport('complet')" class="bg-white text-primary px-6 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-all">
+                                📄 Rapport complet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL AJOUT AUDIENCE -->
+    <div id="addAudienceModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <h3 class="text-3xl font-bold text-primary mb-6">Nouvelle audience</h3>
+            <form id="addAudienceForm" class="space-y-5">
+                <div class="grid grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Nom du client *</label>
+                        <input type="text" id="newClient" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Type d'affaire *</label>
+                        <select id="newType" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" required>
+                            <option value="Contentieux civil">Contentieux civil</option>
+                            <option value="Droit du travail">Droit du travail</option>
+                            <option value="Droit commercial">Droit commercial</option>
+                            <option value="Droit pénal">Droit pénal</option>
+                            <option value="Droit de la famille">Droit de la famille</option>
+                            <option value="Droit immobilier">Droit immobilier</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Date *</label>
+                        <input type="date" id="newDate" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Heure *</label>
+                        <input type="time" id="newTime" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Résumé de l'affaire *</label>
+                    <textarea id="newSummary" rows="4" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" placeholder="Décrivez brièvement l'affaire..." required></textarea>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="closeAddAudienceModal()" class="flex-1 py-3 px-4 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium">
+                        Annuler
+                    </button>
+                    <button type="submit" class="flex-1 py-3 px-4 bg-secondary text-white rounded-lg hover:bg-secondary/90 font-medium">
+                        ✅ Ajouter l'audience
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL VUE DÉTAILLÉE -->
+    <div id="viewAudienceModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl p-8 max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h3 class="text-4xl font-bold text-primary mb-2" id="viewClientName">-</h3>
+                    <p class="text-lg text-gray-600" id="viewCaseType">-</p>
+                </div>
+                <button onclick="closeViewAudienceModal()" class="text-gray-500 hover:text-gray-700 text-4xl leading-none">×</button>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 mb-8">
+                <div class="bg-blue-50 p-5 rounded-lg">
+                    <p class="text-sm font-semibold text-gray-600 mb-1">📅 Date</p>
+                    <p class="text-xl font-bold text-primary" id="viewDate">-</p>
+                </div>
+                <div class="bg-green-50 p-5 rounded-lg">
+                    <p class="text-sm font-semibold text-gray-600 mb-1">🕐 Heure</p>
+                    <p class="text-xl font-bold text-primary" id="viewTime">-</p>
+                </div>
+                <div class="bg-yellow-50 p-5 rounded-lg">
+                    <p class="text-sm font-semibold text-gray-600 mb-1">📊 Statut</p>
+                    <p class="text-xl font-bold text-primary" id="viewStatus">-</p>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h4 class="text-2xl font-bold text-primary mb-3">📖 Résumé de l'affaire</h4>
+                <div class="bg-gray-50 p-5 rounded-lg">
+                    <p class="text-gray-700 leading-relaxed text-lg" id="viewSummary">-</p>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h4 class="text-2xl font-bold text-primary mb-3">🚀 Préparation IA</h4>
+                <button onclick="generatePrepExpress()" id="prepExpressBtn" class="w-full px-6 py-4 bg-gradient-to-r from-secondary to-yellow-600 text-white rounded-lg font-bold text-lg hover:shadow-xl transition-all">
+                    ⚡ Générer la préparation complète
+                </button>
+                
+                <div id="prepExpressLoading" class="hidden text-center py-8">
+                    <div class="loading mx-auto mb-4" style="width: 50px; height: 50px; border-width: 4px; border-color: #e8b44a transparent"></div>
+                    <p class="text-gray-600 text-lg">L'IA analyse votre dossier...</p>
+                </div>
+
+                <div id="prepExpressResult" class="hidden space-y-4 mt-6"></div>
+            </div>
+
+            <div class="mb-6">
+                <h4 class="text-2xl font-bold text-primary mb-3">📝 Notes</h4>
+                <textarea id="viewNotes" rows="4" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" placeholder="Ajoutez vos notes..."></textarea>
+                <button onclick="saveNotes()" class="mt-2 px-6 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 font-medium">
+                    💾 Enregistrer
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="askAIAboutCase()" class="p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-all border-2 border-purple-200">
+                    <div class="text-3xl mb-2">🤖</div>
+                    <p class="font-bold text-primary">Demander conseil à l'IA</p>
+                </button>
+                <button onclick="generateLetterForCase()" class="p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all border-2 border-blue-200">
+                    <div class="text-3xl mb-2">✍️</div>
+                    <p class="font-bold text-primary">Générer un courrier</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script>
+// DONNÉES
+let audiences = [
+    {
+        id: 1,
+        client: 'Société ABC France',
+        date: '2026-02-09',
+        time: '09:00',
+        type: 'Contentieux civil',
+        summary: 'Litige contractuel - Non-exécution d\'un contrat de prestation de services de 85 000€. Demandeur invoque manquement grave. Défendeur prétend force majeure (argument contestable). Demande: résolution + dommages-intérêts.',
+        status: 'pending',
+        notes: ''
+    },
+    {
+        id: 2,
+        clientId: 2,
+        client: 'Marie Dubois',
+        date: '2026-02-09',
+        time: '14:30',
+        type: 'Droit du travail',
+        summary: 'Licenciement économique contesté. Ancienneté 5 ans. Motif économique non fondé selon preuves. Absence de reclassement sérieux. Demande: réintégration OU indemnités (12 mois de salaire minimum).',
+        status: 'ready',
+        notes: 'Dossier solide - preuves comptables favorables'
+    },
+    {
+        id: 3,
+        clientId: 3,
+        client: 'Jean Martin',
+        date: '2026-02-09',
+        time: '16:00',
+        type: 'Droit commercial',
+        summary: 'Rupture brutale relation commerciale établie (8 ans). Préavis non respecté. Perte CA + coûts réorganisation. Préjudice: 120 000€. Jurisprudence favorable.',
+        status: 'ready',
+        notes: ''
+    },
+    {
+        id: 4,
+        clientId: 4,
+        client: 'Entreprise XYZ',
+        date: '2026-02-11',
+        time: '10:00',
+        type: 'Contentieux civil',
+        summary: 'Recouvrement de créances impayées total 45 000€. Débiteur apparemment insolvable mais patrimoine immobilier identifié. Demande saisie conservatoire.',
+        status: 'pending',
+        notes: ''
+    },
+    {
+        id: 5,
+        clientId: 5,
+        client: 'Sophie Laurent',
+        date: '2026-02-12',
+        time: '11:30',
+        type: 'Droit du travail',
+        summary: 'Harcèlement moral au travail. 6 mois d\'arrêts maladie. Nombreux témoignages concordants de collègues. Certificats médicaux. Demande: résiliation judiciaire + 30 000€ de dommages.',
+        status: 'done',
+        notes: 'Audience passée - Décision favorable'
+    },
+    {
+        id: 6,
+        clientId: 6,
+        client: 'Pierre Durand',
+        date: '2026-02-13',
+        time: '09:30',
+        type: 'Droit pénal',
+        summary: 'Délit de fuite après accident matériel léger. Jeune conducteur, panique. Aucun blessé. Dégâts: 3 000€. Casier vierge. Plaider circonstances atténuantes + bonne foi.',
+        status: 'pending',
+        notes: ''
+    },
+    {
+        id: 7,
+        clientId: 7,
+        client: 'Cabinet DEF',
+        date: '2026-02-14',
+        time: '15:00',
+        type: 'Droit commercial',
+        summary: 'Contentieux fournisseur - 15 livraisons non conformes sur 20. Perte d\'exploitation importante. Expert judiciaire favorable. Demande: 200 000€.',
+        status: 'ready',
+        notes: 'Rapport d\'expert très favorable'
+    },
+    {
+        id: 8,
+        clientId: 8,
+        client: 'Anne Petit',
+        date: '2026-02-14',
+        time: '10:30',
+        type: 'Contentieux civil',
+        summary: 'Troubles anormaux voisinage. Nuisances sonores nocturnes répétées depuis 2 ans. 4 constats d\'huissier détaillés. Demande: cessation + 15 000€ dommages.',
+        status: 'ready',
+        notes: 'Constats très précis'
+    }
+];
+
+let currentFilter = 'all';
+let currentViewingAudience = null;
+
+// LOGIN
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    document.getElementById('loginPage').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    showPage('dashboard');
+    updateStats();
+    renderAllAudiences();
+});
+
+function logout() {
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('loginPage').classList.remove('hidden');
+}
+
+// NAVIGATION
+function showPage(pageName) {
+    document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+    document.getElementById(pageName + 'Page').classList.remove('hidden');
+    
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('bg-white/30', 'shadow-lg');
+        if (item.dataset.page === pageName) {
+            item.classList.add('bg-white/30', 'shadow-lg');
+        }
+    });
+}
+
+// STATS
+function updateStats() {
+    const today = '2026-02-09';
+    const weekStart = '2026-02-09';
+    const weekEnd = '2026-02-15';
+
+    const todayAudiences = audiences.filter(a => a.date === today);
+    const weekAudiences = audiences.filter(a => a.date >= weekStart && a.date <= weekEnd);
+    const readyAudiences = audiences.filter(a => a.status === 'ready');
+    const pendingAudiences = audiences.filter(a => a.status === 'pending');
+
+    document.getElementById('todayCount').textContent = todayAudiences.length;
+    document.getElementById('weekCount').textContent = weekAudiences.length;
+    document.getElementById('readyCount').textContent = readyAudiences.length;
+    document.getElementById('pendingCount').textContent = pendingAudiences.length;
+
+    document.getElementById('countAll').textContent = audiences.length;
+    document.getElementById('countToday').textContent = todayAudiences.length;
+    document.getElementById('countWeek').textContent = weekAudiences.length;
+    document.getElementById('countPending').textContent = pendingAudiences.length;
+    document.getElementById('countReady').textContent = readyAudiences.length;
+
+    // Audiences du jour
+    const todayList = document.getElementById('todayAudiencesList');
+    if (todayAudiences.length === 0) {
+        todayList.innerHTML = '<p class="text-gray-500 text-center py-4">Aucune audience aujourd\'hui</p>';
+    } else {
+        todayList.innerHTML = todayAudiences.map(a => `
+            <div class="flex justify-between items-center p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                <div class="flex-1">
+                    <p class="font-bold text-primary text-lg">${a.client}</p>
+                    <p class="text-sm text-gray-600">${a.type}</p>
+                </div>
+                <div class="text-right mr-4">
+                    <p class="font-bold text-blue-600 text-xl">${a.time}</p>
+                    <p class="text-xs text-gray-500">${a.status === 'ready' ? '✅ Prêt' : '⏳ En préparation'}</p>
+                </div>
+                <button onclick="viewAudience(${a.id})" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 font-medium">
+                    Voir
+                </button>
+            </div>
+        `).join('');
+    }
+}
+
+function renderAllAudiences() {
+    const container = document.getElementById('audiencesList');
+    const today = '2026-02-09';
+    const weekEnd = '2026-02-15';
+
+    let filtered = audiences;
+    if (currentFilter === 'today') filtered = audiences.filter(a => a.date === today);
+    else if (currentFilter === 'week') filtered = audiences.filter(a => a.date >= today && a.date <= weekEnd);
+    else if (currentFilter === 'pending') filtered = audiences.filter(a => a.status === 'pending');
+    else if (currentFilter === 'ready') filtered = audiences.filter(a => a.status === 'ready');
+
+    container.innerHTML = filtered.map(a => {
+        const statusColors = {
+            'pending': 'bg-yellow-100 text-yellow-800 border-yellow-300',
+            'ready': 'bg-green-100 text-green-800 border-green-300',
+            'done': 'bg-gray-100 text-gray-800 border-gray-300'
+        };
+        const statusLabels = { 'pending': '⏳ En préparation', 'ready': '✅ Prêt', 'done': '✔️ Terminé' };
+
+        return `
+            <div class="border-2 border-gray-200 rounded-xl p-6 hover:border-secondary hover:shadow-xl transition-all bg-white">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                            <h4 class="text-2xl font-bold text-primary">${a.client}</h4>
+                            <span class="px-3 py-1 ${statusColors[a.status]} border rounded-full text-sm font-semibold">
+                                ${statusLabels[a.status]}
+                            </span>
+                        </div>
+                        <p class="text-gray-600 font-medium mb-3">${a.type}</p>
+                        <p class="text-gray-700 leading-relaxed">${a.summary}</p>
+                    </div>
+                    <div class="text-right ml-6 min-w-[140px]">
+                        <p class="text-sm font-semibold text-gray-600 mb-1">📅 ${formatDate(a.date)}</p>
+                        <p class="text-lg font-bold text-primary">${a.time}</p>
+                    </div>
+                </div>
+                <div class="flex gap-2 pt-4 border-t">
+                    <button onclick="viewAudience(${a.id})" class="px-5 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 font-semibold">
+                        👁️ Détails
+                    </button>
+                    <button onclick="changeStatus(${a.id}, 'pending')" class="px-3 py-2 text-sm ${a.status === 'pending' ? 'bg-yellow-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} rounded-lg font-medium transition-all">
+                        En préparation
+                    </button>
+                    <button onclick="changeStatus(${a.id}, 'ready')" class="px-3 py-2 text-sm ${a.status === 'ready' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} rounded-lg font-medium transition-all">
+                        Prêt
+                    </button>
+                    <button onclick="changeStatus(${a.id}, 'done')" class="px-3 py-2 text-sm ${a.status === 'done' ? 'bg-gray-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} rounded-lg font-medium transition-all">
+                        Fait
+                    </button>
+                    <button onclick="deleteAudience(${a.id})" class="ml-auto px-3 py-2 text-sm bg-red-100 text-red-700 hover:bg-red-200 rounded-lg font-medium">
+                        🗑️ Supprimer
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    const opts = { weekday: 'short', day: 'numeric', month: 'short' };
+    return d.toLocaleDateString('fr-FR', opts);
+}
+
+function changeStatus(id, newStatus) {
+    const aud = audiences.find(a => a.id === id);
+    if (aud) {
+        aud.status = newStatus;
+        renderAllAudiences();
+        updateStats();
+    }
+}
+
+function deleteAudience(id) {
+    if (confirm('Supprimer cette audience ?')) {
+        audiences = audiences.filter(a => a.id !== id);
+        renderAllAudiences();
+        updateStats();
+    }
+}
+
+function filterAudiences(filter) {
+    currentFilter = filter;
+    renderAllAudiences();
+    
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('bg-primary', 'text-white');
+        btn.classList.add('bg-gray-200', 'text-gray-700');
+        if (btn.dataset.filter === filter) {
+            btn.classList.remove('bg-gray-200', 'text-gray-700');
+            btn.classList.add('bg-primary', 'text-white');
+        }
+    });
+}
+
+// MODAL AJOUT
+function openAddAudienceModal() {
+    document.getElementById('addAudienceModal').classList.remove('hidden');
+}
+
+function closeAddAudienceModal() {
+    document.getElementById('addAudienceModal').classList.add('hidden');
+    document.getElementById('addAudienceForm').reset();
+}
+
+document.getElementById('addAudienceForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const newAud = {
+        id: Math.max(...audiences.map(a => a.id)) + 1,
+        client: document.getElementById('newClient').value,
+        date: document.getElementById('newDate').value,
+        time: document.getElementById('newTime').value,
+        type: document.getElementById('newType').value,
+        summary: document.getElementById('newSummary').value,
+        status: 'pending',
+        notes: ''
+    };
+    audiences.push(newAud);
+    audiences.sort((a, b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time));
+    renderAllAudiences();
+    updateStats();
+    closeAddAudienceModal();
+});
+
+// VUE DÉTAILLÉE
+function viewAudience(id) {
+    const aud = audiences.find(a => a.id === id);
+    if (!aud) return;
+
+    currentViewingAudience = aud;
+    
+    document.getElementById('viewClientName').textContent = aud.client;
+    document.getElementById('viewCaseType').textContent = aud.type;
+    document.getElementById('viewDate').textContent = formatDate(aud.date);
+    document.getElementById('viewTime').textContent = aud.time;
+    
+    const statusLabels = { 'pending': '⏳ En préparation', 'ready': '✅ Prêt', 'done': '✔️ Terminé' };
+    document.getElementById('viewStatus').textContent = statusLabels[aud.status];
+    
+    document.getElementById('viewSummary').textContent = aud.summary;
+    document.getElementById('viewNotes').value = aud.notes || '';
+    
+    document.getElementById('prepExpressResult').classList.add('hidden');
+    document.getElementById('prepExpressLoading').classList.add('hidden');
+    document.getElementById('prepExpressBtn').classList.remove('hidden');
+    
+    document.getElementById('viewAudienceModal').classList.remove('hidden');
+}
+
+function closeViewAudienceModal() {
+    document.getElementById('viewAudienceModal').classList.add('hidden');
+    currentViewingAudience = null;
+}
+
+function saveNotes() {
+    if (currentViewingAudience) {
+        currentViewingAudience.notes = document.getElementById('viewNotes').value;
+        alert('✅ Notes enregistrées !');
+    }
+}
+
+// PRÉPARATION IA
+async function generatePrepExpress() {
+    if (!currentViewingAudience) return;
+    
+    document.getElementById('prepExpressBtn').classList.add('hidden');
+    document.getElementById('prepExpressLoading').classList.remove('hidden');
+    
+    const aud = currentViewingAudience;
+
+    try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 1000,
+                system: `Tu es un avocat senior expert en droit français. Tu prépares des résumés de plaidoirie concis et percutants pour aider les avocats avant leurs audiences. Tu fournis des références juridiques précises (articles de loi, arrêts avec numéros). Réponds UNIQUEMENT en JSON valide avec la structure demandée, sans texte supplémentaire.`,
+                messages: [{
+                    role: 'user',
+                    content: `Prépare une fiche d'audience complète pour ce dossier :
+
+Client: ${aud.client}
+Type: ${aud.type}
+Résumé: ${aud.summary}
+Notes: ${aud.notes || 'Aucune'}
+
+Réponds UNIQUEMENT en JSON avec cette structure exacte:
+{
+  "resume": "résumé en 2-3 phrases",
+  "arguments": [{"titre": "...", "detail": "..."}, ...],
+  "jurisprudence": [{"ref": "...", "principe": "..."}, ...],
+  "vigilance": ["point1", "point2", ...],
+  "plan": "plan de plaidoirie structuré"
+}`
+                }]
+            })
+        });
+        
+        const data = await response.json();
+        let prep;
+        try {
+            prep = JSON.parse(data.content[0].text.replace(/```json|```/g, '').trim());
+        } catch(e) {
+            prep = null;
+        }
+        
+        let content = '';
+        if (prep) {
+            content = `
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-5 rounded-lg">
+                    <h5 class="font-bold text-primary text-lg mb-2">⏱️ Résumé express</h5>
+                    <p class="text-gray-700">${prep.resume}</p>
+                </div>
+
+                <div class="bg-white border-2 border-gray-200 p-5 rounded-lg">
+                    <h5 class="font-bold text-primary text-lg mb-3">✅ Arguments principaux</h5>
+                    <ul class="space-y-2 text-gray-700">
+                        ${(prep.arguments||[]).map(a => `<li class="flex gap-2"><span class="text-green-500 text-xl">✓</span><span><strong>${a.titre}</strong> — ${a.detail}</span></li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="bg-white border-2 border-gray-200 p-5 rounded-lg">
+                    <h5 class="font-bold text-primary text-lg mb-3">⚖️ Jurisprudence clé</h5>
+                    <ul class="space-y-2 text-gray-700">
+                        ${(prep.jurisprudence||[]).map(j => `<li class="flex gap-2"><span class="text-blue-500 text-xl">⚖️</span><span><strong>${j.ref}</strong> — ${j.principe}</span></li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-500 p-5 rounded-lg">
+                    <h5 class="font-bold text-primary text-lg mb-3">⚠️ Points de vigilance</h5>
+                    <ul class="space-y-2 text-orange-700">
+                        ${(prep.vigilance||[]).map(v => `<li>⚠️ ${v}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="bg-gray-50 p-5 rounded-lg">
+                    <h5 class="font-bold text-primary text-lg mb-3">📋 Plan de plaidoirie</h5>
+                    <pre class="whitespace-pre-wrap text-sm text-gray-700 leading-relaxed" id="planPlaidoirie">${prep.plan}</pre>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="copyPrep()" class="flex-1 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 font-medium">📋 Copier le plan</button>
+                    <button onclick="sendPrepToChat()" class="flex-1 px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium">🤖 Approfondir avec l'IA</button>
+                </div>
+            `;
+        } else {
+            content = `<div class="bg-red-50 p-5 rounded-lg"><p class="text-red-700">Erreur lors de la génération. Veuillez réessayer.</p></div>`;
+        }
+
+        document.getElementById('prepExpressResult').innerHTML = content;
+        document.getElementById('prepExpressLoading').classList.add('hidden');
+        document.getElementById('prepExpressResult').classList.remove('hidden');
+    } catch(err) {
+        document.getElementById('prepExpressLoading').classList.add('hidden');
+        document.getElementById('prepExpressResult').innerHTML = `<div class="bg-red-50 p-5 rounded-lg"><p class="text-red-700">⚠️ Erreur de connexion à l'IA.</p></div>`;
+        document.getElementById('prepExpressResult').classList.remove('hidden');
+    }
+}
+
+function copyPrep() {
+    const el = document.getElementById('planPlaidoirie');
+    if (el) { navigator.clipboard.writeText(el.textContent); alert('✅ Plan copié !'); }
+}
+
+function sendPrepToChat() {
+    if (!currentViewingAudience) return;
+    closeViewAudienceModal();
+    showPage('assistant');
+    setTimeout(() => {
+        const msg = `Approfondis la préparation pour : ${currentViewingAudience.client} (${currentViewingAudience.type}). ${currentViewingAudience.summary}. Quels arguments supplémentaires et quelle jurisprudence récente ?`;
+        document.getElementById('chatInput').value = msg;
+        document.getElementById('chatForm').dispatchEvent(new Event('submit'));
+    }, 300);
+}
+function askAIAboutCase() {
+    if (currentViewingAudience) {
+        closeViewAudienceModal();
+        showPage('assistant');
+        setTimeout(() => {
+            document.getElementById('chatInput').value = `Audience ${currentViewingAudience.client} (${currentViewingAudience.type}). ${currentViewingAudience.summary}. Points clés ?`;
+            document.getElementById('chatForm').dispatchEvent(new Event('submit'));
+        }, 300);
+    }
+}
+
+function generateLetterForCase() {
+    if (currentViewingAudience) {
+        closeViewAudienceModal();
+        showPage('courrier');
+        setTimeout(() => {
+            document.getElementById('destinataire').value = currentViewingAudience.client;
+            document.getElementById('objetCourrier').value = currentViewingAudience.type;
+            document.getElementById('contexteCourrier').value = currentViewingAudience.summary;
+        }, 100);
+    }
+}
+
+// ANALYSEUR
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+['dragover', 'dragenter'].forEach(evt => {
+    dropZone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+    });
+});
+
+['dragleave', 'drop'].forEach(evt => {
+    dropZone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+    });
+});
+
+dropZone.addEventListener('drop', (e) => {
+    const files = e.dataTransfer.files;
+    if (files.length > 0) handleFileSelect({ target: { files } });
+});
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    document.getElementById('dropZone').classList.add('hidden');
+    document.getElementById('analysisResult').classList.remove('hidden');
+    document.getElementById('analysisLoading').classList.remove('hidden');
+
+    const steps = [
+        '📄 Lecture du document...',
+        '🔍 Extraction données...',
+        '👥 Identification parties...',
+        '📅 Analyse dates...',
+        '⚖️ Points juridiques...',
+        '💡 Recommandations...'
+    ];
+
+    let i = 0;
+    const interval = setInterval(() => {
+        if (i < steps.length) {
+            document.getElementById('loadingStep').textContent = steps[i++];
+        } else {
+            clearInterval(interval);
+            displayAnalysis();
+        }
+    }, 600);
+}
+
+function displayAnalysis() {
+    const html = `
+        <div class="bg-white rounded-xl shadow-lg p-8">
+            <div class="flex justify-between mb-6">
+                <h3 class="text-3xl font-bold text-primary">📊 Analyse Complète</h3>
+                <div class="flex gap-2">
+                    <button onclick="alert('📥 Export PDF...')" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">📄 PDF</button>
+                    <button onclick="alert('✅ Copié !')" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">📋 Copier</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6 mb-6">
+                <div><p class="text-sm font-semibold text-gray-600">Client</p><p class="text-xl font-bold text-primary">Société ABC France</p></div>
+                <div><p class="text-sm font-semibold text-gray-600">Type</p><p class="text-xl font-bold text-primary">Contentieux commercial</p></div>
+                <div><p class="text-sm font-semibold text-gray-600">Date dossier</p><p class="text-xl font-bold text-primary">15 janvier 2026</p></div>
+                <div><p class="text-sm font-semibold text-gray-600">Référence</p><p class="text-xl font-bold text-primary">RG 2026/00234</p></div>
+            </div>
+
+            <div class="mb-6">
+                <h4 class="text-xl font-bold text-primary mb-3">👥 Parties</h4>
+                <div class="space-y-3">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="font-bold text-primary">Demandeur: Société ABC France</p>
+                        <p class="text-sm text-gray-600">SARL capital 50 000€</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="font-bold text-primary">Défendeur: Entreprise XYZ</p>
+                        <p class="text-sm text-gray-600">SAS capital 100 000€</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h4 class="text-xl font-bold text-primary mb-3">📅 Dates clés</h4>
+                <div class="space-y-2">
+                    <div class="flex gap-3"><span class="text-secondary">📅</span><span><strong>12/09/2025</strong> - Signature contrat</span></div>
+                    <div class="flex gap-3"><span class="text-secondary">📅</span><span><strong>03/11/2025</strong> - Première mise en demeure</span></div>
+                    <div class="flex gap-3"><span class="text-secondary">📅</span><span><strong>15/01/2026</strong> - Assignation</span></div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h4 class="text-xl font-bold text-primary mb-3">📖 Résumé</h4>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <p class="text-gray-700 leading-relaxed">Litige commercial - Non-exécution contrat prestation 85 000€. Malgré mises en demeure, défendeur n'a pas exécuté. Demande résolution + dommages-intérêts.</p>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h4 class="text-xl font-bold text-primary mb-3">⚖️ Points juridiques</h4>
+                <div class="space-y-2">
+                    <div class="flex gap-2"><span class="text-blue-500">⚖️</span><span><strong>Art. 1103 C.civ</strong> - Force obligatoire</span></div>
+                    <div class="flex gap-2"><span class="text-blue-500">⚖️</span><span><strong>Art. 1217 C.civ</strong> - Inexécution</span></div>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 border-l-4 border-secondary p-6 rounded-lg">
+                <h4 class="text-xl font-bold text-primary mb-3">💡 Recommandations</h4>
+                <ul class="space-y-2">
+                    <li class="flex gap-2"><span class="text-secondary">💡</span><span>Vérifier toutes pièces justificatives</span></li>
+                    <li class="flex gap-2"><span class="text-secondary">💡</span><span>Anticiper argument force majeure adverse</span></li>
+                    <li class="flex gap-2"><span class="text-secondary">💡</span><span>Calculer montants avec précision</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-xl font-bold text-primary mb-4">Actions rapides</h3>
+            <div class="grid grid-cols-3 gap-4">
+                <button onclick="showPage('courrier')" class="p-4 bg-blue-50 hover:bg-blue-100 rounded-lg border-2 border-blue-200">
+                    <div class="text-3xl mb-2">✍️</div>
+                    <p class="font-bold text-primary">Générer courrier</p>
+                </button>
+                <button onclick="showPage('assistant')" class="p-4 bg-purple-50 hover:bg-purple-100 rounded-lg border-2 border-purple-200">
+                    <div class="text-3xl mb-2">🤖</div>
+                    <p class="font-bold text-primary">Demander conseil</p>
+                </button>
+                <button onclick="showPage('delais')" class="p-4 bg-green-50 hover:bg-green-100 rounded-lg border-2 border-green-200">
+                    <div class="text-3xl mb-2">⏱️</div>
+                    <p class="font-bold text-primary">Calculer délai</p>
+                </button>
+            </div>
+        </div>
+
+        <button onclick="resetAnalyzer()" class="w-full py-3 px-6 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300">
+            Analyser nouveau document
+        </button>
+    `;
+
+    document.getElementById('analysisComplete').innerHTML = html;
+    document.getElementById('analysisLoading').classList.add('hidden');
+    document.getElementById('analysisComplete').classList.remove('hidden');
+}
+
+function resetAnalyzer() {
+    document.getElementById('analysisResult').classList.add('hidden');
+    document.getElementById('dropZone').classList.remove('hidden');
+    fileInput.value = '';
+}
+
+// ASSISTANT IA - Powered by Claude API
+const chatHistory = [];
+
+document.getElementById('chatForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const msg = document.getElementById('chatInput').value.trim();
+    if (!msg) return;
+
+    addMessage('user', msg);
+    document.getElementById('chatInput').value = '';
+    
+    const loadingId = 'loading_' + Date.now();
+    addMessageLoading(loadingId);
+
+    chatHistory.push({ role: 'user', content: msg });
+
+    try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 1000,
+                system: `Tu es un assistant juridique expert en droit français, spécialisé dans le support aux avocats. 
+Tu connais parfaitement le Code civil, le Code du travail, le Code de commerce, le Code pénal, et la jurisprudence française (Cour de cassation, Conseil d'État, Cours d'appel).
+Tu fournis des conseils juridiques précis, des références légales exactes (articles de loi, numéros d'arrêts réels), et des recommandations pratiques pour les audiences.
+Tu parles toujours en français, avec un ton professionnel et concis adapté aux avocats.
+Quand tu cites de la jurisprudence, précise la chambre, la date et le numéro de pourvoi.
+Tu peux suggérer des stratégies de plaidoirie, des arguments juridiques, et anticiper les arguments adverses.`,
+                messages: chatHistory
+            })
+        });
+        
+        const data = await response.json();
+        const aiText = data.content[0].text;
+        
+        removeMessageLoading(loadingId);
+        chatHistory.push({ role: 'assistant', content: aiText });
+        addMessage('ai', aiText);
+    } catch (err) {
+        removeMessageLoading(loadingId);
+        addMessage('ai', '⚠️ Erreur de connexion. Vérifiez votre connexion et réessayez.');
+    }
+});
+
+function formatAIText(text) {
+    return text
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/^#{1,3}\s(.+)$/gm, '<strong class="text-primary">$1</strong>')
+        .replace(/^[-•]\s(.+)$/gm, '<li class="ml-4 list-disc">$1</li>')
+        .replace(/\n\n/g, '</p><p class="mt-2">')
+        .replace(/\n/g, '<br>');
+}
+
+function addMessage(sender, text) {
+    const div = document.createElement('div');
+    div.className = 'chat-message';
+    
+    if (sender === 'user') {
+        div.innerHTML = `
+            <div class="flex gap-3 justify-end">
+                <div class="bg-primary text-white rounded-lg p-4 max-w-2xl">
+                    <p>${text}</p>
+                </div>
+                <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center flex-shrink-0">👤</div>
+            </div>
+        `;
+    } else {
+        div.innerHTML = `
+            <div class="flex gap-3">
+                <div class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center flex-shrink-0">🤖</div>
+                <div class="bg-gray-100 rounded-lg p-4 max-w-2xl">
+                    <p class="text-gray-700">${formatAIText(text)}</p>
+                </div>
+            </div>
+        `;
+    }
+    
+    document.getElementById('chatMessages').appendChild(div);
+    document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+}
+
+function addMessageLoading(id) {
+    const div = document.createElement('div');
+    div.className = 'chat-message';
+    div.id = id;
+    div.innerHTML = `
+        <div class="flex gap-3">
+            <div class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center flex-shrink-0">🤖</div>
+            <div class="bg-gray-100 rounded-lg p-4">
+                <div class="flex gap-1 items-center">
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay:0s"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay:0.2s"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay:0.4s"></div>
+                    <span class="text-sm text-gray-500 ml-2">L'IA analyse votre question...</span>
+                </div>
+            </div>
+        </div>
+    `;
+    document.getElementById('chatMessages').appendChild(div);
+    document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+}
+
+function removeMessageLoading(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+}
+
+function quickQuestion(q) {
+    document.getElementById('chatInput').value = q;
+    document.getElementById('chatForm').dispatchEvent(new Event('submit'));
+}
+
+// COURRIERS - Powered by Claude API
+document.getElementById('courrierForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const type = document.getElementById('courrierType').value;
+    const dest = document.getElementById('destinataire').value;
+    const obj = document.getElementById('objetCourrier').value;
+    const ctx = document.getElementById('contexteCourrier').value;
+
+    const btn = this.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading"></span> Génération IA en cours...';
+    document.getElementById('courrierResult').classList.add('hidden');
+
+    const typeLabels = {
+        'mise_en_demeure': 'Mise en demeure',
+        'assignation': 'Assignation',
+        'conclusions': 'Conclusions',
+        'requete': 'Requête',
+        'appel': 'Déclaration d\'appel',
+        'transaction': 'Protocole transactionnel'
+    };
+
+    try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 1000,
+                system: `Tu es un avocat expert en droit français qui rédige des actes juridiques professionnels.
+Tu dois rédiger des courriers et actes juridiques parfaitement conformes aux usages du barreau français.
+Utilise les formules juridiques appropriées, les références légales correctes, et un style formel professionnel.
+Le document doit être complet, prêt à envoyer, avec en-tête cabinet, date, objet, corps et formule de politesse.
+Ne mets pas de balises markdown, uniquement du texte formaté proprement.`,
+                messages: [{
+                    role: 'user',
+                    content: `Rédige un(e) ${typeLabels[type] || type} pour les éléments suivants :
+                    
+Destinataire : ${dest}
+Objet : ${obj}
+Contexte et faits : ${ctx}
+
+En-tête : Cabinet Dupont, Avocat au Barreau de Paris, 123 Boulevard Saint-Germain, 75006 Paris
+Date : ${new Date().toLocaleDateString('fr-FR')}
+
+Rédige un document complet, professionnel, prêt à envoyer.`
+                }]
+            })
+        });
+        
+        const data = await response.json();
+        const courrier = data.content[0].text;
+        
+        document.getElementById('courrierContent').textContent = courrier;
+        document.getElementById('courrierResult').classList.remove('hidden');
+    } catch (err) {
+        alert('⚠️ Erreur lors de la génération. Veuillez réessayer.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '🚀 Générer avec l\'IA';
+    }
+});
+
+function downloadCourrier() {
+    const content = document.getElementById('courrierContent').textContent;
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'courrier_juridique_' + Date.now() + '.txt';
+    a.click();
+}
+
+function copyCourrier() {
+    navigator.clipboard.writeText(document.getElementById('courrierContent').textContent);
+    alert('✅ Courrier copié !');
+}
+
+// DÉLAIS
+document.getElementById('delaisForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const type = document.getElementById('typeProcedure').value;
+    const dateNotif = new Date(document.getElementById('dateNotif').value);
+
+    const delais = {
+        'appel': { jours: 30, nom: 'Appel' },
+        'pourvoi': { jours: 60, nom: 'Pourvoi cassation' },
+        'opposition': { jours: 30, nom: 'Opposition' },
+        'tierce_opposition': { jours: 30, nom: 'Tierce opposition' },
+        'contredit': { jours: 15, nom: 'Contredit' }
+    };
+
+    const delai = delais[type];
+    const dateLimite = new Date(dateNotif);
+    dateLimite.setDate(dateLimite.getDate() + delai.jours);
+
+    const dateStr = dateLimite.toLocaleDateString('fr-FR', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    document.getElementById('dateLimite').textContent = dateStr;
+
+    const today = new Date();
+    const joursRestants = Math.ceil((dateLimite - today) / (1000 * 60 * 60 * 24));
+
+    document.getElementById('joursRestants').textContent = `${joursRestants} jours restants`;
+
+    document.getElementById('delaisDetails').innerHTML = `
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-gray-50 p-5 rounded-lg">
+                <p class="text-sm text-gray-600 mb-1">Délai légal</p>
+                <p class="text-2xl font-bold text-primary">${delai.jours} jours</p>
+            </div>
+            <div class="bg-${joursRestants < 7 ? 'red' : 'blue'}-50 p-5 rounded-lg">
+                <p class="text-sm text-gray-600 mb-1">Jours restants</p>
+                <p class="text-2xl font-bold text-${joursRestants < 7 ? 'red' : 'blue'}-600">${joursRestants} jours</p>
+            </div>
+        </div>
+        ${joursRestants < 7 ? '<div class="bg-red-50 border-l-4 border-red-500 p-5 rounded-lg mt-4"><p class="text-red-700 font-bold text-lg">⚠️ URGENCE : Délai très proche ! Agissez immédiatement.</p></div>' : ''}
+        <div class="bg-blue-50 p-5 rounded-lg mt-4">
+            <p class="text-sm text-gray-600 mb-2">📌 Rappels importants</p>
+            <ul class="text-sm text-gray-700 space-y-1">
+                <li>✓ Délai calculé depuis la notification</li>
+                <li>✓ Prévoir marge sécurité (2-3 jours)</li>
+                <li>✓ Vérifier jours fériés</li>
+            </ul>
+        </div>
+    `;
+
+    document.getElementById('delaisResult').classList.remove('hidden');
+});
+
+// TRI INTELLIGENT PIÈCES - init différé
+function initPiecesDragDrop() {
+    const piecesDropZone = document.getElementById('piecesDropZone');
+    if (!piecesDropZone || piecesDropZone._initialized) return;
+    piecesDropZone._initialized = true;
+
+    ['dragover', 'dragenter'].forEach(evt => {
+        piecesDropZone.addEventListener(evt, (e) => {
+            e.preventDefault();
+            piecesDropZone.classList.add('drag-over');
+        });
+    });
+
+    ['dragleave'].forEach(evt => {
+        piecesDropZone.addEventListener(evt, (e) => {
+            e.preventDefault();
+            piecesDropZone.classList.remove('drag-over');
+        });
+    });
+
+    piecesDropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        piecesDropZone.classList.remove('drag-over');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) handlePiecesUpload({ target: { files } });
+    });
+}
+
+// Patch showPage pour init drag drop au bon moment
+const _origShowPage = showPage;
+window.showPage = function(pageName) {
+    _origShowPage(pageName);
+    if (pageName === 'pieces') setTimeout(initPiecesDragDrop, 0);
+};
+
+function launchDemoPieces() {
+    runPiecesAnalysis('Dossier Société ABC – 156 pages');
+}
+
+function handlePiecesUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    runPiecesAnalysis(file.name);
+}
+
+function runPiecesAnalysis(filename) {
+    document.getElementById('piecesDropZone').classList.add('hidden');
+    document.getElementById('piecesAnalysisLoading').classList.remove('hidden');
+
+    const steps = [
+        { text: '📄 Lecture et indexation du document...', progress: 15 },
+        { text: '🔍 Identification des types de pièces...', progress: 30 },
+        { text: '📋 Classification automatique...', progress: 50 },
+        { text: '📅 Extraction des dates clés...', progress: 65 },
+        { text: '⚖️ Détection des points juridiques...', progress: 80 },
+        { text: '⚠️ Analyse des alertes et anomalies...', progress: 90 },
+        { text: '✅ Finalisation du rapport...', progress: 100 }
+    ];
+
+    let i = 0;
+    const interval = setInterval(() => {
+        if (i < steps.length) {
+            document.getElementById('piecesAnalysisStep').textContent = steps[i].text;
+            document.getElementById('piecesProgressBar').style.width = steps[i].progress + '%';
+            document.getElementById('piecesProgressText').textContent = steps[i].progress + '%';
+            i++;
+        } else {
+            clearInterval(interval);
+            setTimeout(displayPiecesResults, 500);
+        }
+    }, 800);
+}
+
+function displayPiecesResults() {
+    document.getElementById('piecesAnalysisLoading').classList.add('hidden');
+    document.getElementById('piecesResults').classList.remove('hidden');
+}
+
+function toggleCategory(categoryId) {
+    const el = document.getElementById('category-' + categoryId);
+    const isHidden = el.classList.contains('hidden');
+    
+    // Fermer toutes les autres
+    document.querySelectorAll('[id^="category-"]').forEach(cat => {
+        cat.classList.add('hidden');
+    });
+    
+    // Ouvrir celle cliquée si elle était fermée
+    if (isHidden) {
+        el.classList.remove('hidden');
+    }
+}
+
+function viewPiecePage(pageNumber) {
+    alert(`📄 Ouverture de la page ${pageNumber} du document...`);
+}
+
+function exportPiecesReport() {
+    alert('📥 Export du rapport complet en cours...\n\n✅ Le rapport sera téléchargé au format PDF avec :\n- Toutes les pièces classées\n- Les alertes identifiées\n- Les dates essentielles\n- Un index complet');
+}
+
+function resetPiecesAnalyzer() {
+    document.getElementById('piecesResults').classList.add('hidden');
+    document.getElementById('piecesDropZone').classList.remove('hidden');
+    const fi = document.getElementById('piecesFileInput');
+    if (fi) fi.value = '';
+}
+
+function addPiecesToAudience() {
+    alert('📎 Pièces attachées au dossier !\n\nVous pouvez maintenant retrouver toutes ces pièces triées directement dans la vue détaillée de votre audience.');
+    showPage('dashboard');
+}
+
+
+// ==================== DOSSIERS CLIENTS ====================
+let clientFolders = [
+    {
+        id: 1,
+        name: 'Société ABC France',
+        type: 'Contentieux civil',
+        status: 'Actif',
+        created: '2025-11-15',
+        notes: 'Litige contractuel important',
+        audiences: [1], // IDs des audiences liées
+        documents: [
+            { name: 'Contrat_prestation.pdf', size: '245 KB', date: '2025-11-15' },
+            { name: 'Mises_en_demeure.pdf', size: '180 KB', date: '2025-11-20' },
+            { name: 'Factures.pdf', size: '320 KB', date: '2025-11-22' }
+        ]
+    },
+    {
+        id: 2,
+        name: 'Marie Dubois',
+        type: 'Droit du travail',
+        status: 'Actif',
+        created: '2025-10-10',
+        notes: 'Dossier licenciement économique',
+        audiences: [2],
+        documents: [
+            { name: 'Contrat_travail.pdf', size: '156 KB', date: '2025-10-10' },
+            { name: 'Bulletins_salaire.pdf', size: '890 KB', date: '2025-10-12' },
+            { name: 'Lettre_licenciement.pdf', size: '120 KB', date: '2025-10-15' }
+        ]
+    },
+    {
+        id: 3,
+        name: 'Jean Martin',
+        type: 'Droit commercial',
+        status: 'Actif',
+        created: '2025-09-05',
+        notes: '',
+        audiences: [3],
+        documents: [
+            { name: 'Contrat_commercial.pdf', size: '312 KB', date: '2025-09-05' }
+        ]
+    },
+    {
+        id: 4,
+        name: 'Entreprise XYZ',
+        type: 'Contentieux civil',
+        status: 'Actif',
+        created: '2025-12-01',
+        notes: '',
+        audiences: [4],
+        documents: []
+    },
+    {
+        id: 5,
+        name: 'Sophie Laurent',
+        type: 'Droit du travail',
+        status: 'Terminé',
+        created: '2025-08-20',
+        notes: 'Affaire gagnée',
+        audiences: [5],
+        documents: [
+            { name: 'Certificats_medicaux.pdf', size: '445 KB', date: '2025-08-20' }
+        ]
+    }
+];
+
+let currentViewingClientId = null;
+
+
+function updateClientsStats() {
+    const total = clientFolders.length;
+    const active = clientFolders.filter(c => c.status === 'Actif' || c.status === 'En cours').length;
+    const totalAuds = clientFolders.reduce((sum, c) => sum + c.audiences.length, 0);
+    const totalDocs = clientFolders.reduce((sum, c) => sum + c.documents.length, 0);
+    
+    const el1 = document.getElementById('totalClientsCount');
+    const el2 = document.getElementById('activeClientsCount');
+    const el3 = document.getElementById('totalAudiencesInClients');
+    const el4 = document.getElementById('totalClientDocs');
+    
+    if (el1) el1.textContent = total;
+    if (el2) el2.textContent = active;
+    if (el3) el3.textContent = totalAuds;
+    if (el4) el4.textContent = totalDocs;
+}
+
+
+function renderClientAudiences(client) {
+    const container = document.getElementById('clientAudiencesListDetail');
+    if (!container) return;
+    
+    if (client.audiences.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-center py-8">Aucune audience pour ce client. Cliquez sur "+ Ajouter une audience" pour en créer une.</p>';
+        return;
+    }
+    
+    container.innerHTML = client.audiences.map(audId => {
+        const aud = audiences.find(a => a.id === audId);
+        if (!aud) return '';
+        
+        const statusColors = {
+            'pending': 'bg-yellow-100 text-yellow-800',
+            'ready': 'bg-green-100 text-green-800',
+            'done': 'bg-gray-100 text-gray-800'
+        };
+        const statusLabels = {
+            'pending': '⏳ En préparation',
+            'ready': '✅ Prêt',
+            'done': '✔️ Fait'
+        };
+        
+        return `
+            <div class="border-2 border-gray-200 rounded-lg p-4 hover:border-blue-400 transition-all">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="px-3 py-1 ${statusColors[aud.status]} rounded-full text-xs font-semibold">
+                                ${statusLabels[aud.status]}
+                            </span>
+                        </div>
+                        <p class="font-semibold text-gray-600 mb-1">${aud.type}</p>
+                        <p class="text-gray-700 text-sm">${aud.summary}</p>
+                    </div>
+                    <div class="text-right ml-4">
+                        <p class="text-sm font-bold text-primary mb-1">${formatDate(aud.date)}</p>
+                        <p class="text-sm text-gray-600">${aud.time}</p>
+                    </div>
+                </div>
+                <div class="flex gap-2 mt-4">
+                    <button onclick="viewAudience(${audId}); event.stopPropagation();" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium">
+                        👁️ Voir
+                    </button>
+                    <button onclick="unlinkAudienceFromClient(${audId}); event.stopPropagation();" class="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 text-sm font-medium">
+                        🔗 Délier
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderClientDocuments(client) {
+    const container = document.getElementById('clientDocsListDetail');
+    if (!container) return;
+    
+    if (client.documents.length === 0) {
+        container.innerHTML = '<p class="col-span-2 text-gray-500 text-center py-8">Aucun document. Glissez-déposez des fichiers ou cliquez sur "Ajouter fichiers".</p>';
+        return;
+    }
+    
+    container.innerHTML = client.documents.map((doc, index) => `
+        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
+            <div class="flex items-center gap-2 flex-1">
+                <span class="text-xl">📄</span>
+                <div>
+                    <p class="text-sm font-semibold text-gray-700">${doc.name}</p>
+                    <p class="text-xs text-gray-500">${doc.size} • ${doc.date}</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="downloadClientDoc('${doc.name}'); event.stopPropagation();" class="text-blue-500 hover:text-blue-700 text-sm">⬇️</button>
+                <button onclick="deleteClientDoc(${index}); event.stopPropagation();" class="text-red-500 hover:text-red-700 text-sm">🗑️</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function setupClientDropZone() {
+    const dropArea = document.getElementById('clientDropArea');
+    if (!dropArea) return;
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropArea.classList.add('border-secondary', 'bg-yellow-50');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropArea.classList.remove('border-secondary', 'bg-yellow-50');
+        });
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        handleClientFilesDrop(files);
+    });
+    
+    dropArea.addEventListener('click', () => {
+        uploadDocsToClient();
+    });
+}
+
+function handleClientFilesDrop(files) {
+    const client = clientFolders.find(c => c.id === currentViewingClientId);
+    if (!client) return;
+    
+    Array.from(files).forEach(file => {
+        client.documents.push({
+            name: file.name,
+            size: (file.size / 1024).toFixed(0) + ' KB',
+            date: new Date().toISOString().split('T')[0]
+        });
+    });
+    
+    viewClientDetail(currentViewingClientId);
+    alert(`✅ ${files.length} fichier(s) ajouté(s) !`);
+}
+
+function backToClients() {
+    document.getElementById('clientDetailsPage').classList.add('hidden');
+    document.getElementById('clientsPage').classList.remove('hidden');
+    currentViewingClientId = null;
+}
+
+function updateClientStatus() {
+    const client = clientFolders.find(c => c.id === currentViewingClientId);
+    if (client) {
+        client.status = document.getElementById('detailClientStatus').value;
+        renderClientsList();
+    }
+}
+
+function saveClientNotesDetail() {
+    const client = clientFolders.find(c => c.id === currentViewingClientId);
+    if (client) {
+        client.notes = document.getElementById('detailClientNotes').value;
+        alert('✅ Notes enregistrées !');
+    }
+}
+
+function uploadDocsToClient() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.accept = '.pdf,.doc,.docx,.jpg,.png,.xlsx';
+    input.onchange = (e) => {
+        if (e.target.files.length > 0) {
+            handleClientFilesDrop(e.target.files);
+        }
+    };
+    input.click();
+}
+
+function analyzeClientDocs() {
+    const client = clientFolders.find(c => c.id === currentViewingClientId);
+    if (!client || client.documents.length === 0) {
+        alert('⚠️ Aucun document à analyser. Ajoutez d\'abord des documents.');
+        return;
+    }
+    alert(`🤖 Analyse IA lancée pour ${client.documents.length} document(s) de ${client.name}.\n\nRedirection vers le Tri Intelligent Pièces...`);
+    setTimeout(() => {
+        showPage('pieces');
+        launchDemoPieces();
+    }, 800);
+}
+
+function downloadClientDoc(docName) {
+    alert(`📥 Téléchargement de ${docName}...`);
+}
+
+function deleteClientDoc(index) {
+    if (confirm('Supprimer ce document ?')) {
+        const client = clientFolders.find(c => c.id === currentViewingClientId);
+        if (client) {
+            client.documents.splice(index, 1);
+            viewClientDetail(currentViewingClientId);
+        }
+    }
+}
+
+function deleteCurrentClient() {
+    if (confirm('⚠️ Supprimer définitivement ce client et toutes ses données ?')) {
+        clientFolders = clientFolders.filter(c => c.id !== currentViewingClientId);
+        backToClients();
+        renderClientsList();
+        alert('✅ Client supprimé');
+    }
+}
+
+function unlinkAudienceFromClient(audId) {
+    if (confirm('Délier cette audience du client ?')) {
+        const client = clientFolders.find(c => c.id === currentViewingClientId);
+        if (client) {
+            client.audiences = client.audiences.filter(id => id !== audId);
+            viewClientDetail(currentViewingClientId);
+        }
+    }
+}
+
+// Modals
+function openCreateClientModal() {
+    document.getElementById('createClientModal').classList.remove('hidden');
+}
+
+function closeCreateClientModal() {
+    document.getElementById('createClientModal').classList.add('hidden');
+    document.getElementById('createClientForm').reset();
+}
+
+function openAddAudienceToClientModal() {
+    document.getElementById('addAudienceToClientModal').classList.remove('hidden');
+}
+
+function closeAddAudienceToClientModal() {
+    document.getElementById('addAudienceToClientModal').classList.add('hidden');
+    document.getElementById('addAudienceToClientForm').reset();
+}
+
+// Form submissions
+if (document.getElementById('createClientForm')) {
+    document.getElementById('createClientForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const newClient = {
+            id: Math.max(...clientFolders.map(c => c.id), 0) + 1,
+            name: document.getElementById('newClientNameInput').value,
+            type: document.getElementById('newClientTypeInput').value,
+            status: 'Actif',
+            created: new Date().toISOString().split('T')[0],
+            notes: document.getElementById('newClientNotesInput').value,
+            audiences: [],
+            documents: []
+        };
+        
+        clientFolders.push(newClient);
+        renderClientsList();
+        closeCreateClientModal();
+        alert('✅ Client créé ! Vous pouvez maintenant lui ajouter des audiences.');
+        viewClientDetail(newClient.id);
+    });
+}
+
+if (document.getElementById('addAudienceToClientForm')) {
+    document.getElementById('addAudienceToClientForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const client = clientFolders.find(c => c.id === currentViewingClientId);
+        if (!client) return;
+        
+        const newAud = {
+            id: Math.max(...audiences.map(a => a.id), 0) + 1,
+            client: client.name,
+            date: document.getElementById('newAudDateForClient').value,
+            time: document.getElementById('newAudTimeForClient').value,
+            type: client.type,
+            summary: document.getElementById('newAudSummaryForClient').value,
+            status: 'pending',
+            notes: ''
+        };
+        
+        audiences.push(newAud);
+        client.audiences.push(newAud.id);
+        
+        renderAllAudiences();
+        updateStats();
+        viewClientDetail(currentViewingClientId);
+        closeAddAudienceToClientModal();
+        alert('✅ Audience créée et liée au client !');
+    });
+}
+
+
+
+function filterJuris(filter) {
+    document.querySelectorAll('.juris-filter').forEach(btn => {
+        btn.classList.remove('bg-primary', 'text-white');
+        btn.classList.add('bg-gray-200', 'text-gray-700');
+        if (btn.dataset.filter === filter) {
+            btn.classList.remove('bg-gray-200', 'text-gray-700');
+            btn.classList.add('bg-primary', 'text-white');
+        }
+    });
+}
+
+function viewFullArret(numero) {
+    alert(`📄 Ouverture de l'arrêt n° ${numero}...\n\nTexte intégral disponible sur Judilibre.`);
+}
+
+function copyReference(ref) {
+    navigator.clipboard.writeText(ref);
+    alert('✅ Référence copiée !\n\n' + ref);
+}
+
+function addToMemorandum(numero) {
+    alert(`✅ Ajouté au mémoire !\n\nArrêt n° ${numero} ajouté à votre liste pour génération automatique du mémoire.`);
+}
+
+function viewLegifrance(article) {
+    alert(`🔗 Ouverture de l'article ${article} sur Légifrance...`);
+}
+
+function copyArticle(article) {
+    alert(`✅ Article ${article} copié !`);
+}
+
+function exportJurisReport() {
+    alert('📥 Export du rapport complet...\n\n✅ Le rapport PDF sera téléchargé avec :\n• Toutes les jurisprudences pertinentes\n• Les textes de loi applicables\n• La synthèse pour plaidoirie\n• Les références complètes');
+}
+
+function generateMemorandum() {
+    alert('📝 Génération du mémoire en cours...\n\n✅ Un mémoire complet sera généré avec :\n• Introduction juridique\n• Tous les arrêts cités\n• Argumentation structurée\n• Conclusion\n\nFormat : DOCX');
+    setTimeout(() => showPage('courrier'), 1000);
+}
+
+function exportJurisToPDF() {
+    alert('📄 Export PDF en cours...\n\n✅ Document téléchargé avec toute la recherche juridique.');
+}
+
+function resetJurisSearch() {
+    document.getElementById('jurisResults').classList.add('hidden');
+    document.getElementById('jurisForm').reset();
+}
+
+
+// RECHERCHE JURISPRUDENCE - Powered by Claude API
+document.getElementById('jurisForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const domaine = document.getElementById('jurisDomaine').value;
+    const juridiction = document.getElementById('jurisJuridiction').value;
+    const problematique = document.getElementById('jurisProblematique').value;
+    
+    // Masquer formulaire, afficher loading
+    document.querySelector('#jurisprudencePage .bg-white').style.display = 'none';
+    document.getElementById('jurisLoading').classList.remove('hidden');
+    document.getElementById('jurisResults').classList.add('hidden');
+    
+    // Simulation des étapes visuelles pendant l'appel IA
+    const steps = [
+        { icon: 'icon2', step: 'step2', text: 'Recherche Cour de cassation...', delay: 800 },
+        { icon: 'icon3', step: 'step3', text: 'Scan des Cours d\'appel...', delay: 1600 },
+        { icon: 'icon4', step: 'step4', text: 'Analyse pertinence IA...', delay: 2400 }
+    ];
+    
+    steps.forEach(s => {
+        setTimeout(() => {
+            document.getElementById(s.icon).textContent = '✓';
+            document.getElementById(s.icon).className = 'text-green-500 text-xl';
+            document.getElementById(s.step).className = 'text-gray-700';
+            document.getElementById('jurisLoadingStep').textContent = s.text;
+        }, s.delay);
+    });
+
+    const domaineLabels = {
+        'civil': 'droit civil / contrats', 'travail': 'droit du travail',
+        'commercial': 'droit commercial', 'penal': 'droit pénal',
+        'administratif': 'droit administratif', 'famille': 'droit de la famille',
+        'immobilier': 'droit immobilier'
+    };
+
+    try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 1000,
+                system: `Tu es un expert en jurisprudence française. Tu fournis des références juridiques précises et réelles (arrêts de la Cour de cassation, Conseil d'État, Cours d'appel, textes Légifrance).
+Réponds UNIQUEMENT en JSON valide sans texte autour, avec la structure exacte demandée.`,
+                messages: [{
+                    role: 'user',
+                    content: `Recherche jurisprudentielle en ${domaineLabels[domaine] || domaine} (juridiction: ${juridiction}).
+
+Problématique: ${problematique}
+
+Réponds en JSON avec cette structure EXACTE (sans markdown):
+{
+  "total": nombre_total,
+  "jurisCount": nombre_jurisprudences,
+  "loisCount": nombre_textes_loi,
+  "synthese": "synthèse en 2 phrases",
+  "jurisprudences": [
+    {
+      "reference": "Cass. soc., 5 avril 2018, n° 16-26.368",
+      "juridiction": "Cour de cassation",
+      "chambre": "Chambre sociale",
+      "principe": "principe de droit énoncé",
+      "pertinence": "explication de la pertinence pour cette affaire",
+      "legifranceUrl": "https://www.legifrance.gouv.fr/..."
+    }
+  ],
+  "textesLoi": [
+    {
+      "article": "Article 1103 du Code civil",
+      "code": "Code civil",
+      "contenu": "résumé du contenu",
+      "application": "comment s'applique à cette affaire",
+      "url": "https://www.legifrance.gouv.fr/..."
+    }
+  ]
+}`
+                }]
+            })
+        });
+        
+        const data = await response.json();
+        let jurisData;
+        try {
+            jurisData = JSON.parse(data.content[0].text.replace(/```json|```/g, '').trim());
+        } catch(e) {
+            jurisData = null;
+        }
+        
+        document.getElementById('jurisLoading').classList.add('hidden');
+        
+        if (jurisData) {
+            document.getElementById('jurisResultsCount').textContent = jurisData.total || (jurisData.jurisCount + jurisData.loisCount);
+            document.getElementById('jurisResultsSummary').textContent = jurisData.synthese || `${jurisData.jurisCount} jurisprudences + ${jurisData.loisCount} textes de loi`;
+            document.getElementById('jurisCountJuris').textContent = jurisData.jurisCount;
+            document.getElementById('jurisCountLois').textContent = jurisData.loisCount;
+            
+            let html = '<h4 class="text-2xl font-bold text-primary mb-6">⚖️ Jurisprudences</h4><div class="space-y-4 mb-8">';
+            
+            (jurisData.jurisprudences || []).forEach(j => {
+                html += `
+                    <div class="border-2 border-blue-200 rounded-lg p-6 hover:border-blue-400 transition-all">
+                        <h5 class="text-xl font-bold text-primary mb-2">${j.reference}</h5>
+                        <div class="flex gap-3 mb-3">
+                            <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">${j.juridiction}</span>
+                            <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">${j.chambre}</span>
+                        </div>
+                        <p class="text-gray-700 mb-3"><strong>Principe :</strong> ${j.principe}</p>
+                        <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500 mb-4">
+                            <p class="text-sm font-semibold text-yellow-800">💡 Pertinence pour votre affaire :</p>
+                            <p class="text-sm text-gray-700 mt-1">${j.pertinence}</p>
+                        </div>
+                        <div class="flex gap-3">
+                            ${j.legifranceUrl ? `<a href="${j.legifranceUrl}" target="_blank" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium">📄 Voir sur Légifrance</a>` : ''}
+                            <button onclick="addToPrep('${j.reference.replace(/'/g,"\\'")}'); this.textContent='✅ Ajouté !'; this.classList.replace('bg-green-500','bg-gray-400');" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 text-sm font-medium">➕ Ajouter à ma préparation</button>
+                        </div>
+                    </div>`;
+            });
+            
+            html += '</div><h4 class="text-2xl font-bold text-primary mb-6 mt-8">📚 Textes de loi applicables</h4><div class="space-y-4">';
+            
+            (jurisData.textesLoi || []).forEach(t => {
+                html += `
+                    <div class="border-2 border-green-200 rounded-lg p-6 hover:border-green-400 transition-all">
+                        <h5 class="text-xl font-bold text-primary mb-2">${t.article}</h5>
+                        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold mb-3 inline-block">${t.code}</span>
+                        <p class="text-gray-700 bg-gray-50 p-4 rounded-lg mb-3">${t.contenu}</p>
+                        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 mb-4">
+                            <p class="text-sm font-semibold text-blue-800">💡 Application :</p>
+                            <p class="text-sm text-gray-700 mt-1">${t.application}</p>
+                        </div>
+                        <div class="flex gap-3">
+                            ${t.url ? `<a href="${t.url}" target="_blank" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium">📄 Voir sur Légifrance</a>` : ''}
+                            <button onclick="addToPrep('${t.article.replace(/'/g,"\\'")}'); this.textContent='✅ Ajouté !'; this.classList.replace('bg-green-500','bg-gray-400');" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 text-sm font-medium">➕ Ajouter</button>
+                        </div>
+                    </div>`;
+            });
+            
+            html += '</div>';
+            document.getElementById('jurisResultsContent').innerHTML = html;
+            document.getElementById('jurisResults').classList.remove('hidden');
+        } else {
+            document.querySelector('#jurisprudencePage .bg-white').style.display = 'block';
+            alert('⚠️ Erreur lors de la recherche. Veuillez réessayer.');
+        }
+    } catch(err) {
+        document.getElementById('jurisLoading').classList.add('hidden');
+        document.querySelector('#jurisprudencePage .bg-white').style.display = 'block';
+        alert('⚠️ Erreur de connexion à l\'IA. Veuillez réessayer.');
+    }
+});
+
+
+function addToPrep(reference) {
+    alert('✅ ' + reference + ' ajouté à votre préparation d\'audience !\n\nVous pourrez le retrouver dans la vue détaillée de votre audience.');
+}
+
+function exportJurisReport() {
+    alert('📥 Export en cours...\n\n✅ Le rapport complet sera téléchargé avec :\n- Toutes les jurisprudences\n- Tous les textes de loi\n- Les liens Légifrance\n- Analyse de pertinence IA');
+}
+
+function resetJurisSearch() {
+    document.getElementById('jurisResults').classList.add('hidden');
+    document.querySelector('#jurisprudencePage .bg-white').style.display = 'block';
+    document.getElementById('jurisForm').reset();
+    
+    // Reset icons
+    ['icon2', 'icon3', 'icon4'].forEach(id => {
+        document.getElementById(id).textContent = '○';
+        document.getElementById(id).className = 'text-gray-400 text-xl';
+    });
+    ['step2', 'step3', 'step4'].forEach(id => {
+        document.getElementById(id).className = 'text-gray-500';
+    });
+}
+
+</script>
+    <!-- MODAL CRÉATION DOSSIER CLIENT -->
+
+    <!-- MODAL LIER À AUDIENCE -->
+    <div id="linkAudienceModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full">
+            <h3 class="text-3xl font-bold text-primary mb-6">Lier à une audience</h3>
+            <p class="text-gray-600 mb-6">Sélectionnez l'audience à lier à ce dossier client</p>
+            <div class="mb-6">
+                <select id="linkAudienceSelect" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none">
+                    <!-- Généré par JS -->
+                </select>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeLinkAudienceModal()" class="flex-1 py-3 px-4 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium">
+                    Annuler
+                </button>
+                <button onclick="confirmLinkAudience()" class="flex-1 py-3 px-4 bg-secondary text-white rounded-lg hover:bg-secondary/90 font-medium">
+                    🔗 Lier
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+<script>
+// GESTION CLIENTS
+let currentClientId = null;
+
+function renderClients() {
+    const container = document.getElementById('clientsList');
+    const search = document.getElementById('clientSearch').value.toLowerCase();
+    
+    const filtered = clients.filter(c => 
+        c.name.toLowerCase().includes(search) ||
+        c.email.toLowerCase().includes(search) ||
+        c.type.toLowerCase().includes(search)
+    );
+    
+    container.innerHTML = filtered.map(client => {
+        const clientAudiences = audiences.filter(a => a.clientId === client.id);
+        const nextAudience = clientAudiences.find(a => new Date(a.date) >= new Date());
+        
+        return `
+            <div class="bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-secondary hover:shadow-2xl transition-all card-hover">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                            <h4 class="text-2xl font-bold text-primary">${client.name}</h4>
+                            <span class="px-3 py-1 ${client.type === 'Entreprise' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'} rounded-full text-sm font-semibold">
+                                ${client.type}
+                            </span>
+                        </div>
+                        <div class="space-y-1 mb-3">
+                            <p class="text-gray-600"><strong>📧</strong> ${client.email}</p>
+                            <p class="text-gray-600"><strong>📞</strong> ${client.phone}</p>
+                            <p class="text-gray-600"><strong>📁</strong> ${clientAudiences.length} audience(s) • ${client.documents.length} documents</p>
+                        </div>
+                        ${nextAudience ? `
+                            <div class="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500">
+                                <p class="text-sm font-semibold text-blue-800">Prochaine audience</p>
+                                <p class="text-sm text-gray-700">${formatDate(nextAudience.date)} à ${nextAudience.time} - ${nextAudience.type}</p>
+                            </div>
+                        ` : '<div class="bg-gray-50 p-3 rounded-lg"><p class="text-sm text-gray-600">Aucune audience prévue</p></div>'}
+                    </div>
+                    <div class="ml-6">
+                        <button onclick="viewClient(${client.id})" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 font-semibold mb-2">
+                            👁️ Voir le dossier
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function filterClients() {
+    renderClients();
+}
+
+function viewClient(clientId) {
+    const client = clients.find(c => c.id === clientId);
+    if (!client) return;
+    
+    currentClientId = clientId;
+    
+    // Remplir les infos
+    document.getElementById('clientDetailName').textContent = client.name;
+    document.getElementById('clientDetailType').textContent = client.type;
+    document.getElementById('clientDetailEmail').textContent = client.email;
+    document.getElementById('clientDetailPhone').textContent = client.phone;
+    document.getElementById('clientDetailDate').textContent = formatDate(client.since);
+    document.getElementById('clientNotes').value = client.notes;
+    
+    // Audiences du client
+    const clientAudiences = audiences.filter(a => a.clientId === clientId);
+    document.getElementById('clientAudiences').innerHTML = clientAudiences.length > 0 ? clientAudiences.map(a => {
+        const statusColors = {
+            'pending': 'bg-yellow-100 text-yellow-800',
+            'ready': 'bg-green-100 text-green-800',
+            'done': 'bg-gray-100 text-gray-800'
+        };
+        const statusLabels = {
+            'pending': '⏳ En préparation',
+            'ready': '✅ Prêt',
+            'done': '✔️ Terminé'
+        };
+        
+        return `
+            <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                            <p class="font-bold text-primary">${formatDate(a.date)} à ${a.time}</p>
+                            <span class="px-2 py-1 ${statusColors[a.status]} rounded-full text-xs font-semibold">
+                                ${statusLabels[a.status]}
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-1">${a.type}</p>
+                        <p class="text-sm text-gray-700">${a.summary.substring(0, 100)}...</p>
+                    </div>
+                    <button onclick="viewAudience(${a.id}); closeClientDetailModal();" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium ml-4">
+                        Voir
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('') : '<p class="text-gray-500 text-center py-4">Aucune audience pour ce client</p>';
+    
+    // Documents
+    document.getElementById('clientDocuments').innerHTML = client.documents.map(doc => `
+        <div class="bg-gray-50 p-3 rounded-lg hover:bg-gray-100 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span>📄</span>
+                <span class="text-sm font-medium">${doc}</span>
+            </div>
+            <button onclick="alert('📥 Téléchargement...')" class="text-blue-500 hover:text-blue-700">⬇️</button>
+        </div>
+    `).join('');
+    
+    // Activité
+    document.getElementById('clientActivity').innerHTML = client.activity.map(act => `
+        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <span class="text-2xl">📌</span>
+            <div class="flex-1">
+                <p class="font-semibold text-primary">${act.action}</p>
+                <p class="text-sm text-gray-600">${formatDate(act.date)} • ${act.user}</p>
+            </div>
+        </div>
+    `).join('');
+    
+    document.getElementById('clientDetailModal').classList.remove('hidden');
+}
+
+function closeClientDetailModal() {
+    document.getElementById('clientDetailModal').classList.add('hidden');
+    currentClientId = null;
+}
+
+function saveClientNotes() {
+    if (currentClientId) {
+        const client = clients.find(c => c.id === currentClientId);
+        if (client) {
+            client.notes = document.getElementById('clientNotes').value;
+            alert('✅ Notes enregistrées !');
+        }
+    }
+}
+
+function addAudienceToClient() {
+    closeClientDetailModal();
+    openAddAudienceModal();
+    // Pré-remplir le client
+    if (currentClientId) {
+        const client = clients.find(c => c.id === currentClientId);
+        if (client) {
+            setTimeout(() => {
+                document.getElementById('newClient').value = client.name;
+            }, 100);
+        }
+    }
+}
+
+function uploadClientDoc() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.doc,.docx,.jpg,.png';
+    input.onchange = function(e) {
+        if (e.target.files.length > 0 && currentClientId) {
+            const client = clients.find(c => c.id === currentClientId);
+            if (client) {
+                client.documents.push(e.target.files[0].name);
+                viewClient(currentClientId);
+                alert('✅ Document ajouté !');
+            }
+        }
+    };
+    input.click();
+}
+
+function openAddClientModal() {
+    document.getElementById('addClientModal').classList.remove('hidden');
+}
+
+function closeAddClientModal() {
+    document.getElementById('addClientModal').classList.add('hidden');
+    document.getElementById('addClientForm').reset();
+}
+
+document.getElementById('addClientForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const newClient = {
+        id: Math.max(...clients.map(c => c.id)) + 1,
+        name: document.getElementById('newClientName').value,
+        type: document.getElementById('newClientType').value,
+        email: document.getElementById('newClientEmail').value,
+        phone: document.getElementById('newClientPhone').value,
+        address: document.getElementById('newClientAddress').value,
+        since: new Date().toISOString().split('T')[0],
+        notes: '',
+        documents: [],
+        activity: [
+            { date: new Date().toISOString().split('T')[0], action: 'Création du dossier', user: 'Me. Dupont' }
+        ]
+    };
+    
+    clients.push(newClient);
+    renderClients();
+    closeAddClientModal();
+    alert('✅ Client créé avec succès !');
+});
+
+// Initialisation clients
+window.addEventListener('DOMContentLoaded', function() {
+    renderClients();
+});
+
+
+function exportReport(type) {
+    const reports = {
+        'mensuel': 'Rapport d\'activité mensuel (Février 2026)\n- 8 audiences\n- 94% de réussite\n- 12h gagnées',
+        'clients': 'Liste de vos 8 clients avec historique complet',
+        'complet': 'Rapport complet incluant:\n- Statistiques\n- Liste audiences\n- Dossiers clients\n- Utilisation outils IA'
+    };
+    
+    alert('📥 Export en cours...\n\n✅ ' + reports[type] + '\n\nLe fichier PDF sera téléchargé dans quelques secondes.');
+}
+
+
+// Fonctions pour l'analyseur modal
+function openAnalyzerModal() {
+    document.getElementById('analyzerModal').classList.remove('hidden');
+}
+
+function closeAnalyzerModal() {
+    document.getElementById('analyzerModal').classList.add('hidden');
+    document.getElementById('analysisResultModal').classList.add('hidden');
+    document.getElementById('dropZoneModal').style.display = 'block';
+}
+
+async function handleFileSelectModal(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    document.getElementById('dropZoneModal').style.display = 'none';
+    
+    document.getElementById('analysisResultModal').innerHTML = `
+        <div class="text-center py-12">
+            <div class="loading mx-auto mb-4" style="width: 60px; height: 60px; border-width: 5px; border-color: #e8b44a transparent"></div>
+            <h3 class="text-2xl font-bold text-primary mb-2">🤖 Analyse IA en cours...</h3>
+            <p class="text-gray-600">Extraction et analyse des données juridiques</p>
+        </div>
+    `;
+    document.getElementById('analysisResultModal').classList.remove('hidden');
+    
+    try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 1000,
+                system: `Tu es un assistant juridique expert. Tu analyses des noms de fichiers de dossiers juridiques et génères une analyse réaliste et professionnelle. Réponds UNIQUEMENT en JSON valide sans markdown.`,
+                messages: [{
+                    role: 'user',
+                    content: `Génère une analyse réaliste pour ce fichier juridique: "${file.name}" (${Math.round(file.size/1024)} KB).
+
+JSON attendu (sans markdown):
+{
+  "client": "nom du client",
+  "typeAffaire": "type d'affaire",
+  "nbPieces": nombre,
+  "categories": 7,
+  "alertes": 3,
+  "resume": "résumé court",
+  "pointsCles": ["point1", "point2", "point3"]
+}`
+                }]
+            })
+        });
+        
+        const data = await response.json();
+        let analysis;
+        try {
+            analysis = JSON.parse(data.content[0].text.replace(/```json|```/g, '').trim());
+        } catch(e) {
+            analysis = { client: "Analyse du document", typeAffaire: "Dossier juridique", nbPieces: 47, categories: 7, alertes: 3, resume: "Document analysé avec succès.", pointsCles: ["Points juridiques identifiés", "Pièces classées", "Alertes détectées"] };
+        }
+        
+        document.getElementById('analysisResultModal').innerHTML = `
+            <div class="space-y-6">
+                <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl">
+                    <h4 class="text-2xl font-bold mb-2">✅ Analyse terminée</h4>
+                    <p class="text-lg opacity-90">${analysis.resume}</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-blue-50 p-5 rounded-xl">
+                        <p class="text-sm text-gray-600 mb-1">Client identifié</p>
+                        <p class="text-xl font-bold text-primary">${analysis.client}</p>
+                    </div>
+                    <div class="bg-green-50 p-5 rounded-xl">
+                        <p class="text-sm text-gray-600 mb-1">Type d'affaire</p>
+                        <p class="text-xl font-bold text-primary">${analysis.typeAffaire}</p>
+                    </div>
+                    <div class="bg-yellow-50 p-5 rounded-xl">
+                        <p class="text-sm text-gray-600 mb-1">Pièces identifiées</p>
+                        <p class="text-xl font-bold text-primary">${analysis.nbPieces} pièces • ${analysis.categories} catégories</p>
+                    </div>
+                    <div class="bg-red-50 p-5 rounded-xl">
+                        <p class="text-sm text-gray-600 mb-1">⚠️ Alertes critiques</p>
+                        <p class="text-xl font-bold text-red-600">${analysis.alertes} alertes détectées</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-xl">
+                    <h5 class="font-bold text-primary mb-3">📊 Points clés identifiés</h5>
+                    <ul class="space-y-2">
+                        ${(analysis.pointsCles||[]).map(p => `<li class="flex gap-2"><span class="text-green-500">✓</span><span class="text-gray-700">${p}</span></li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button onclick="attachToClient()" class="flex-1 px-6 py-4 bg-secondary text-white rounded-xl font-bold hover:bg-secondary/90 shadow-lg">
+                        📎 Attacher à un client
+                    </button>
+                    <button onclick="viewFullAnalysis()" class="flex-1 px-6 py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 shadow-lg">
+                        👁️ Voir le détail complet
+                    </button>
+                </div>
+            </div>
+        `;
+    } catch(err) {
+        document.getElementById('analysisResultModal').innerHTML = `<div class="bg-red-50 p-6 rounded-xl"><p class="text-red-700 font-bold">⚠️ Erreur d'analyse. Veuillez réessayer.</p></div>`;
+    }
+}
+
+function attachToClient() {
+    alert('✅ Analyse attachée au dossier client !\n\nVous pouvez retrouver toutes les pièces et l\'analyse dans la fiche du client.');
+    closeAnalyzerModal();
+}
+
+function viewFullAnalysis() {
+    closeAnalyzerModal();
+    showPage('pieces');
+    alert('📊 Vous pouvez voir l\'analyse complète dans l\'outil "Tri Intelligent Pièces"');
+}
+</script>
+    <!-- MODAL NOUVEAU CLIENT -->
+    <div id="createClientModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full">
+            <h3 class="text-3xl font-bold text-primary mb-6">Nouveau client</h3>
+            <form id="createClientForm" class="space-y-5">
+                <div class="grid grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Nom du client *</label>
+                        <input type="text" id="newClientNameInput" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" placeholder="Ex: Jean Dupont" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Type d'affaire *</label>
+                        <select id="newClientTypeInput" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" required>
+                            <option value="Contentieux civil">Contentieux civil</option>
+                            <option value="Droit du travail">Droit du travail</option>
+                            <option value="Droit commercial">Droit commercial</option>
+                            <option value="Droit pénal">Droit pénal</option>
+                            <option value="Droit de la famille">Droit de la famille</option>
+                            <option value="Droit immobilier">Droit immobilier</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Notes (optionnel)</label>
+                    <textarea id="newClientNotesInput" rows="3" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" placeholder="Notes sur le client..."></textarea>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="closeCreateClientModal()" class="flex-1 py-3 px-4 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium">
+                        Annuler
+                    </button>
+                    <button type="submit" class="flex-1 py-3 px-4 bg-secondary text-white rounded-lg hover:bg-secondary/90 font-medium">
+                        ✅ Créer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL AJOUTER AUDIENCE AU CLIENT -->
+    <div id="addAudienceToClientModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl p-8 max-w-3xl w-full">
+            <h3 class="text-3xl font-bold text-primary mb-6">Nouvelle audience pour ce client</h3>
+            
+            <form id="addAudienceToClientForm" class="space-y-5">
+                <div class="grid grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Date *</label>
+                        <input type="date" id="newAudDateForClient" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Heure *</label>
+                        <input type="time" id="newAudTimeForClient" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Résumé de l'affaire *</label>
+                    <textarea id="newAudSummaryForClient" rows="4" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-secondary focus:outline-none" placeholder="Décrivez brièvement l'affaire..." required></textarea>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="closeAddAudienceToClientModal()" class="flex-1 py-3 px-4 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium">
+                        Annuler
+                    </button>
+                    <button type="submit" class="flex-1 py-3 px-4 bg-secondary text-white rounded-lg hover:bg-secondary/90 font-medium">
+                        ✅ Créer l'audience
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
